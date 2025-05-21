@@ -1,0 +1,16 @@
+<!-- Set header -->
+<h2 mat-dialog-title>{{ title() }}</h2>
+<mat-dialog-content>
+  <!-- if isEditMode or isCreateMode -->
+  <p>{{ message() }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-fab extended (click)="onNoClick()" cdkFocusInitial>
+    <mat-icon>{{ cancelButtonIcon() }}</mat-icon>
+    {{ cancelButtonText() }}
+  </button>
+  <button mat-fab extended (click)="onConfirm()">
+    <mat-icon>{{ confirmButtonIcon() }}</mat-icon>
+    {{ confirmButtonText() }}
+  </button>
+</mat-dialog-actions>

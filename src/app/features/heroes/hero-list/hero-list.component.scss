@@ -1,0 +1,30 @@
+.heroes-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 1rem;
+  .hero-card {
+    width: 30%;
+    justify-content: space-between;
+    &-content {
+      text-wrap: initial;
+      overflow: hidden;
+    }
+    &-actions {
+      display: flex;
+      margin: 0.5rem;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      &-button {
+        cursor: pointer;
+        color: var(--mat-sys-primary);
+        &:hover {
+          color: var(--mat-sys-primary-container);
+        }
+      }
+    }
+  }
+}

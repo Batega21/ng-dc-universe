@@ -1,0 +1,20 @@
+<!-- Create Hero footer -->
+<div class="hero-footer">
+  <mat-toolbar>
+    <a class="hero-footer-link" mat-menu-item routerLink="/" routerLinkActive="activebutton" ariaCurrentWhenActive="page">
+      <b>Home</b>
+    </a>
+    <a class="hero-footer-link" mat-menu-item routerLink="/hero/add" routerLinkActive="activebutton" ariaCurrentWhenActive="page">
+      Add Hero
+    </a>
+    <a class="hero-footer-link" mat-menu-item href="https://localhost:4200" routerLinkActive="activebutton" ariaCurrentWhenActive="page" target="_blank">
+      GitHub
+    </a>
+  </mat-toolbar>
+  <div class="hero-footer-content">
+    <p>Hero App &copy; {{ year }}</p>
+    <p>All rights reserved</p>
+    <p class="angular-text">Powered by Angular</p>
+    <p>Version 1.0.0</p>
+  </div>
+</div>

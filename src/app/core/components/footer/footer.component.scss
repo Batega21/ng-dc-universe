@@ -1,0 +1,39 @@
+.hero-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--mat-sys-terciary);
+  padding: 1rem;
+  text-align: center;
+  
+  p, a {
+    display: inline-flex;
+    font-size: 0.8rem;
+    margin: 0;
+    padding: 1rem;
+    width: max-content;
+  }
+
+  &-link {
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--mat-sys-primary);
+    }
+  }
+
+  &-content {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+
+    .angular-text {
+      font-weight: bold;
+      color: var(--mat-sys-primary);
+    }
+  }
+}

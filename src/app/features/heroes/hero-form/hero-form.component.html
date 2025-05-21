@@ -1,0 +1,59 @@
+<div class="hero-form">
+
+  @if (store.loading()) {
+  
+  <pre>...Loading</pre>
+  
+  <app-loader></app-loader>
+  
+} @else {
+  
+  <div class="hero-form-header">
+    <h2>{{ isEditMode() ? store.selectedHero().name : 'Add Hero' }}</h2>
+    <p>{{ isEditMode() ? 'Fill this form to edit ' + hero().name : 'Creating a new Hero' }}</p>
+    <p>{{ store.selectedHero().name }}</p>
+    <p>{{ hero().name }}</p>
+  </div>
+
+  <div class="hero-form-wrapper">
+
+    <img src="{{ hero().image.url }}" alt="{{ hero().name }}">
+
+    <div class="hero-form-wrapper-form">
+      <form [formGroup]="heroForm" class="hero-form-wrapper-form">
+
+        <mat-form-field class="form-field">
+          <mat-label for="name">Name:</mat-label>
+          <input matInput id="name" type="text" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="fullName">Full Name:</mat-label>
+          <input matInput id="fullName" type="text" formControlName="fullName">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="alterEgos">Alter Egos:</mat-label>
+          <input matInput id="alterEgos" type="text" formControlName="alterEgos">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="firstAppearance">First Appearance:</mat-label>
+          <input matInput id="firstAppearance" type="text" formControlName="firstAppearance">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="placeOfBirth">Place of Birth:</mat-label>
+          <input matInput id="placeOfBirth" type="text" formControlName="placeOfBirth">
+        </mat-form-field>
+
+      </form>
+      <button mat-fab extended class="hero-form-button" color="primary" (click)="openDialog()"
+        [disabled]="!heroForm.valid">
+        <mat-icon>{{ actionButtonIcon() }}</mat-icon>
+        {{ actionButton() }}
+      </button>
+    </div>
+  </div>
+}
+</div>
