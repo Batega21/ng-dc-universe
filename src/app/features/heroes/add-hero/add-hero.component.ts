@@ -82,20 +82,9 @@ export class AddHeroComponent {
       },
     };
 
-    console.log(
-      '🚀 ~ AddHeroComponent ~ openDialog ~ heroFormData:',
-      heroFormData
-    );
-
     const dialogRef = this.dialog.open(HeroDialog, dialogConfig);
 
-    dialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
-      if (isConfirmed !== undefined) {
-        console.log(
-          '🚀 ~ AddHeroComponent ~ openDialog ~ isConfirmed:',
-          isConfirmed
-        );
-      }
+    dialogRef.afterClosed().subscribe(() => {
       this.route.navigate(['/']);
     });
   }

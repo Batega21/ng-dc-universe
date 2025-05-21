@@ -144,11 +144,4 @@ export class EditHeroComponent {
       this.route.navigate(['/']);
     });
   }
-
-  public onCheckboxChange(event: any) {
-    console.log("🚀 ~ Edit change event:", event)
-    const powersArray: FormGroup = this.heroForm.get('powersGroup') as FormGroup;
-    console.log("🚀 ~ EditHeroComponent ~ powersArray:", powersArray.value)
-    console.log("🚀 ~ EditHeroComponent ~ selectedPowers:", this.selectedPowers)
-  }
 }

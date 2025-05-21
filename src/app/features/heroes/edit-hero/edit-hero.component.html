@@ -1,5 +1,5 @@
 <div class="hero-form">
-  
+
   <div class="hero-form-header">
     <div>
       <h2>{{ store.selectedHero().name }}</h2>
@@ -54,9 +54,8 @@
         <section class="power-section" formGroupName="powersGroup">
           @for (power of powers; track power) {
           <div class="power-section-checkbox">
-            <mat-checkbox [formControlName]="power"
-              (change)="onCheckboxChange($event)">{{ power }}</mat-checkbox>
-            </div>
+            <mat-checkbox [formControlName]="power">{{ power }}</mat-checkbox>
+          </div>
           }
         </section>
 
