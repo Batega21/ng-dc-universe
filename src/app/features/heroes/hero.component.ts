@@ -14,7 +14,7 @@ import { UpperCasePipe } from '@angular/common';
     UpperCasePipe,
   ],
   templateUrl: './hero.component.html',
-  styleUrl: './hero.component.scss'
+  styleUrls: ['./hero.component.scss'],
 })
 export class HeroComponent {
   readonly store = inject(HeroesProvider);

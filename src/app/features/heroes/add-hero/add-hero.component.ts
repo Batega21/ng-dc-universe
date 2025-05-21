@@ -37,7 +37,7 @@ import { HeroesProvider } from '../../../state/hero.store';
     ButtonBackComponent,
   ],
   templateUrl: './add-hero.component.html',
-  styleUrl: './add-hero.component.scss',
+  styleUrls: ['./add-hero.component.scss'],
 })
 export class AddHeroComponent {
   readonly store = inject(HeroesProvider);

@@ -46,7 +46,7 @@ import { HeroPowers } from '../../../core/constant/powers';
     ButtonBackComponent,
   ],
   templateUrl: './edit-hero.component.html',
-  styleUrl: './edit-hero.component.scss',
+  styleUrls: ['./edit-hero.component.scss'],
 })
 export class EditHeroComponent {
   readonly store = inject(HeroesProvider);

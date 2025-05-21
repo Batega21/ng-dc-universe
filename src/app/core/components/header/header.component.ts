@@ -19,7 +19,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     RouterLinkActive,
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
   title = signal('Heroes');

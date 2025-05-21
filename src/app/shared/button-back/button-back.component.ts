@@ -7,8 +7,12 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-button-back',
   imports: [MatButtonModule, RouterLink, MatIconModule, MatTooltipModule],
-  templateUrl: './button-back.component.html',
-  styleUrl: './button-back.component.scss'
+  template: `
+    <button mat-icon-button matTooltip="Return to the Home page" class="button-go-back" aria-label="Go back button"
+      [routerLink]="['/']" routerLinkActive="router-link-active">
+      <mat-icon>arrow_back</mat-icon>
+    </button>`,
+  styleUrls: ['./button-back.component.scss'],
 })
 export class ButtonBackComponent {
 

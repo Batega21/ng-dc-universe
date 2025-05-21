@@ -25,8 +25,7 @@ import { HeroesProvider } from '../../../state/hero.store';
     CommonModule,
   ],
   templateUrl: './hero-list.component.html',
-  styleUrl: './hero-list.component.scss',
-  standalone: true,
+  styleUrls: ['./hero-list.component.scss'],
   providers: [HeroesProvider],
 })
 export class HeroListComponent {

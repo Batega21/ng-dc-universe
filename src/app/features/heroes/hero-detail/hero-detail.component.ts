@@ -17,8 +17,7 @@ import { HeroesProvider } from '../../../state/hero.store';
 @Component({
   selector: 'app-hero-detail',
   templateUrl: './hero-detail.component.html',
-  styleUrl: './hero-detail.component.scss',
-  standalone: true,
+  styleUrls: ['./hero-detail.component.scss'],
   imports: [
     MatToolbarModule,
     MatIconModule,

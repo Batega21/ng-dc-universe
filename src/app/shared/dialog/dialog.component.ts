@@ -28,7 +28,7 @@ import { HeroesProvider } from '../../state/hero.store';
     MatIconModule,
   ],
   templateUrl: './dialog.component.html',
-  styleUrl: './dialog.component.scss'
+  styleUrls: ['./dialog.component.scss'],
 })
 export class HeroDialog {
   readonly store = inject(HeroesProvider);
