@@ -13,6 +13,7 @@ import { Hero, HeroesPaginated } from '../core/interfaces/hero';
 import { HeroService } from '../core/services/hero.service';
 import { LoggerService } from '../core/services/logger.service';
 import { delay } from 'rxjs';
+import { Pagination } from '../core/constant/pagination';
 
 // Sources:
 // https://ngrx.io/guide/signals/signal-store
@@ -33,8 +34,8 @@ const initialState: heroesState = {
   loading: false,
   initialLoad: false,
   heroesCount: 0,
-  page: 1,
-  limit: 6,
+  page: Pagination.DEFAULT_PAGE,
+  limit: Pagination.DEFAULT_LIMIT,
   selectedHero: {} as Hero,
 };
 
@@ -58,7 +59,7 @@ export const HeroesProvider = signalStore(
 
   withMethods(({ logger, heroesService, ...store }) => ({
     getHeroes(): void {
-      const storageHeroes = JSON.parse(localStorage.getItem('heroes') || '[]');
+      const storageHeroes = JSON.parse(localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}');
       patchState(store, { loading: true });
       if (storageHeroes.length > 0) {
         logger.log('Heroes loaded from local storage');
@@ -122,7 +123,7 @@ export const HeroesProvider = signalStore(
     },
 
     getHeroesPaginated(page: number, limit: number): void {
-      const storageHeroes = JSON.parse(localStorage.getItem('heroes') || '[]');
+      const storageHeroes = JSON.parse(localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}');
       patchState(store, { loading: true });
       if (storageHeroes.heroes?.length > 0) {
         logger.log('Heroes loaded from local storage');
@@ -131,6 +132,8 @@ export const HeroesProvider = signalStore(
           heroesCount: storageHeroes.heroesCount,
           loading: false,
           initialLoad: true,
+          page: page,
+          limit: limit,
         });
         return;
       } else {
@@ -142,6 +145,8 @@ export const HeroesProvider = signalStore(
               heroesCount: response.totalHeroes,
               loading: false,
               initialLoad: true,
+              page: page,
+              limit: limit,
             });
             localStorage.setItem('heroes', JSON.stringify({
               heroes: response.data,
@@ -155,8 +160,11 @@ export const HeroesProvider = signalStore(
             logger.error('Error fetching heroes from API:', err);
             patchState(store, {
               heroes: [],
+              heroesCount: 0,
               loading: false,
               initialLoad: false,
+              page: Pagination.DEFAULT_PAGE,
+              limit: Pagination.DEFAULT_LIMIT,
             });
           },
         });
@@ -219,7 +227,7 @@ export const HeroesProvider = signalStore(
 
   withHooks({
     onInit({ logger, heroesService, ...store }) {
-      store.getHeroesPaginated(1, 6);
+      store.getHeroesPaginated(Pagination.DEFAULT_PAGE, Pagination.DEFAULT_LIMIT);
       effect(() => {
         if (store.initialLoad()) {
           localStorage.setItem('heroes', JSON.stringify(store.heroes()));

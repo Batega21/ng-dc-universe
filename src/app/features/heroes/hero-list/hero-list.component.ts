@@ -13,6 +13,7 @@ import { DELETE_DIALOG_DATA } from '../../../core/constant/dialog.constant';
 import { Hero } from '../../../core/interfaces/hero';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { HeroesProvider } from '../../../state/hero.store';
+import { Pagination } from '../../../core/constant/pagination';
 
 @Component({
   selector: 'app-hero-list',
@@ -34,8 +35,8 @@ import { HeroesProvider } from '../../../state/hero.store';
 export class HeroListComponent {
   public readonly store = inject(HeroesProvider);
   public readonly dialog = inject(MatDialog);
-  public pageSize = signal(6);
-  public currentPage = signal(1);
+  public pageSize = signal(Pagination.DEFAULT_LIMIT);
+  public currentPage = signal(Pagination.DEFAULT_PAGE);
 
   constructor() {}
 
@@ -43,7 +44,6 @@ export class HeroListComponent {
     this.pageSize.update(() => event.pageSize);
     this.currentPage.update(() => event.pageIndex + 1);
 
-    this.store.page = this.currentPage;
     this.store.getHeroesPaginated(this.currentPage(), this.pageSize());
   }
 
