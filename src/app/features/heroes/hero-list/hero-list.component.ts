@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
@@ -34,16 +34,17 @@ import { HeroesProvider } from '../../../state/hero.store';
 export class HeroListComponent {
   public readonly store = inject(HeroesProvider);
   public readonly dialog = inject(MatDialog);
-  public totalHeroes = this.store.heroesCount;
-  public pageSize = 5;
-  public currentPage = 0;
+  public pageSize = signal(6);
+  public currentPage = signal(1);
 
   constructor() {}
 
   public onPageChange(event: PageEvent): void {
-    this.pageSize = event.pageSize;
-    this.currentPage = event.pageIndex;
-    this.store.getHeroesPaginated(this.currentPage, this.pageSize);
+    this.pageSize.set(event.pageSize);
+    this.currentPage.set(event.pageIndex + 1);
+
+    this.store.page = this.currentPage;
+    this.store.getHeroesPaginated(this.currentPage(), this.pageSize());
   }
 
   public openDialog(hero: Hero) {
