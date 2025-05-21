@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+
 import { DELETE_DIALOG_DATA } from '../../../core/constant/dialog.constant';
 import { Hero } from '../../../core/interfaces/hero';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
@@ -21,6 +23,7 @@ import { HeroesProvider } from '../../../state/hero.store';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
+    MatPaginatorModule,
     RouterLink,
     CommonModule,
   ],
@@ -29,10 +32,19 @@ import { HeroesProvider } from '../../../state/hero.store';
   providers: [HeroesProvider],
 })
 export class HeroListComponent {
-  readonly store = inject(HeroesProvider);
-  readonly dialog = inject(MatDialog);
+  public readonly store = inject(HeroesProvider);
+  public readonly dialog = inject(MatDialog);
+  public totalHeroes = this.store.heroesCount;
+  public pageSize = 5;
+  public currentPage = 0;
 
   constructor() {}
+
+  public onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.store.getHeroesPaginated(this.currentPage, this.pageSize);
+  }
 
   public openDialog(hero: Hero) {
     const dialogConfig = {

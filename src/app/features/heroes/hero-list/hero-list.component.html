@@ -1,32 +1,37 @@
 <div class="heroes-wrapper">
-  @for (hero of store.heroes(); track hero) {
-  <mat-card class="hero-card" appearance="outlined">
-    <mat-card-header>
-      <mat-card-title-group>
-        <mat-card-title>{{ hero.name | titlecase }}</mat-card-title>
-        <mat-card-subtitle>{{ hero.realName | titlecase }}</mat-card-subtitle>
-      </mat-card-title-group>
-    </mat-card-header>
-    <img mat-card-image [src]="'assets' + hero.imageUrl" alt="{{ hero.name }}">
-    <mat-card-content class="hero-card-content">
+
+  <mat-paginator [length]="totalHeroes" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25]" (page)="onPageChange($event)" aria-label="Select page">
+
+    @for (hero of store.heroes(); track hero) {
+    <mat-card class="hero-card" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title-group>
+          <mat-card-title>{{ hero.name | titlecase }}</mat-card-title>
+          <mat-card-subtitle>{{ hero.realName | titlecase }}</mat-card-subtitle>
+        </mat-card-title-group>
+      </mat-card-header>
+      <img mat-card-image [src]="'assets' + hero.imageUrl" alt="{{ hero.name }}">
+      <mat-card-content class="hero-card-content">
         <mat-list role="list">
           <mat-list-item role="listitem">{{ hero.alias | titlecase }}</mat-list-item>
         </mat-list>
-    </mat-card-content>
-    <mat-card-actions class="hero-card-actions">
-      <button mat-icon-button color="primary" class="hero-card-actions-button" [routerLink]="['/hero/edit', hero.id]"
-        routerLinkActive="router-link-active">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button color="warn" class="hero-card-actions-button" (click)="openDialog(hero)">
-        <mat-icon>delete</mat-icon>
-      </button>
-      <button mat-icon-button class="hero-card-actions-button" aria-label="Hero icon-button with info icon"
-        [routerLink]="['/hero', hero.id]" routerLinkActive="router-link-active">
-        <mat-icon>find_in_page</mat-icon>
-      </button>
-    </mat-card-actions>
-  </mat-card>
-  }
-  <mat-divider></mat-divider>
+      </mat-card-content>
+      <mat-card-actions class="hero-card-actions">
+        <button mat-icon-button color="primary" class="hero-card-actions-button" [routerLink]="['/hero/edit', hero.id]"
+          routerLinkActive="router-link-active">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" class="hero-card-actions-button" (click)="openDialog(hero)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button class="hero-card-actions-button" aria-label="Hero icon-button with info icon"
+          [routerLink]="['/hero', hero.id]" routerLinkActive="router-link-active">
+          <mat-icon>find_in_page</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    }
+    <mat-divider></mat-divider>
+
+  </mat-paginator>
 </div>

@@ -9,7 +9,7 @@ import {
   withState,
 } from '@ngrx/signals';
 
-import { Hero } from '../core/interfaces/hero';
+import { Hero, HeroesPaginated } from '../core/interfaces/hero';
 import { HeroService } from '../core/services/hero.service';
 import { LoggerService } from '../core/services/logger.service';
 import { delay } from 'rxjs';
@@ -22,6 +22,7 @@ type heroesState = {
   heroes: Hero[];
   loading: boolean;
   initialLoad: boolean;
+  heroesCount: number;
   selectedHero: Hero;
 };
 
@@ -29,6 +30,7 @@ const initialState: heroesState = {
   heroes: [] as Hero[],
   loading: false,
   initialLoad: false,
+  heroesCount: 0,
   selectedHero: {} as Hero,
 };
 
@@ -42,7 +44,6 @@ export const HeroesProvider = signalStore(
   })),
 
   withComputed((state) => ({
-    heroesCount: computed(() => state.heroes().length),
     sortedHeroes: computed(() =>
       state
         .heroes()
@@ -53,25 +54,25 @@ export const HeroesProvider = signalStore(
 
   withMethods(({ logger, heroesService, ...store }) => ({
     getHeroes(): void {
-      patchState(store, { loading: true });
-
       const storageHeroes = JSON.parse(localStorage.getItem('heroes') || '[]');
-
+      patchState(store, { loading: true });
       if (storageHeroes.length > 0) {
         logger.log('Heroes loaded from local storage');
         patchState(store, {
           heroes: storageHeroes,
+          heroesCount: storageHeroes.length,
           loading: false,
           initialLoad: true,
         });
       } else {
-        logger.log('No heroes in local storage. Loading from API...');
+        logger.log('Fetching Heroes from API Service');
         heroesService.getHeroes()
           .pipe(delay(1000))
           .subscribe({
           next: (heroes: Hero[]) => {
             patchState(store, {
               heroes: heroes,
+              heroesCount: heroes.length,
               loading: false,
               initialLoad: true,
             });
@@ -83,9 +84,10 @@ export const HeroesProvider = signalStore(
           error: (err) => {
             logger.error('Error fetching heroes from API:', err);
             patchState(store, {
-              heroes: storageHeroes,
+              heroes: [],
+              heroesCount: 0,
               loading: false,
-              initialLoad: true,
+              initialLoad: false,
             });
           },
         });
@@ -109,6 +111,46 @@ export const HeroesProvider = signalStore(
           });
           logger.log('Hero found:', hero);
         }
+      }
+    },
+
+    getHeroesPaginated(page: number, limit: number): void {
+      const storageHeroes = JSON.parse(localStorage.getItem(`heroes-${page}`) || '[]');
+      patchState(store, { loading: true });
+      if (storageHeroes.length > 0) {
+        logger.log('Heroes loaded from local storage');
+        patchState(store, {
+          heroes: storageHeroes,
+          heroesCount: storageHeroes.length,
+          loading: false,
+          initialLoad: true,
+        });
+        return;
+      } else {
+        logger.log(`Fetching Heroes with page: ${page}, limit: ${limit}`);
+        heroesService.getHeroesPaginated(page, limit).subscribe({
+          next: (response: HeroesPaginated) => {
+            patchState(store, {
+              heroes: response.data,
+              heroesCount: response.totalHeroes,
+              loading: false,
+              initialLoad: true,
+            });
+            localStorage.setItem(`heroes-${page}`, JSON.stringify(response.data));
+            logger.log(
+              'Heroes successfully fetched and saved to local storage.'
+            );
+          },
+          error: (err) => {
+            logger.error('Error fetching heroes from API:', err);
+            patchState(store, {
+              heroes: [],
+              heroesCount: 0,
+              loading: false,
+              initialLoad: false,
+            });
+          },
+        });
       }
     },
 
@@ -169,23 +211,7 @@ export const HeroesProvider = signalStore(
   withHooks({
     onInit({ logger, heroesService, ...store }) {
       logger.log('🚀 initialLoad:', store.initialLoad());
-      const storageHeroes = JSON.parse(localStorage.getItem('heroes') || '[]');
-      if (storageHeroes.length > 0) {
-        logger.log('Heroes loaded from local storage');
-        patchState(store, {
-          heroes: storageHeroes,
-          initialLoad: true,
-          loading: false,
-        });
-      } else {
-        logger.log('Heroes loaded from API');
-        patchState(store, {
-          heroes: [],
-          initialLoad: false,
-          loading: true,
-        });
-        store.getHeroes();
-      }
+      store.getHeroesPaginated(1, 10);
       effect(() => {
         if (store.initialLoad()) {
           localStorage.setItem('heroes', JSON.stringify(store.heroes()));
