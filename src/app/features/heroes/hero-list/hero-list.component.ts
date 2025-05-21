@@ -40,8 +40,8 @@ export class HeroListComponent {
   constructor() {}
 
   public onPageChange(event: PageEvent): void {
-    this.pageSize.set(event.pageSize);
-    this.currentPage.set(event.pageIndex + 1);
+    this.pageSize.update(() => event.pageSize);
+    this.currentPage.update(() => event.pageIndex + 1);
 
     this.store.page = this.currentPage;
     this.store.getHeroesPaginated(this.currentPage(), this.pageSize());
