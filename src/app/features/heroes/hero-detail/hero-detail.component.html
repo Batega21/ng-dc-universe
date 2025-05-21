@@ -1,0 +1,29 @@
+<mat-card class="hero-detail-card" appearance="outlined">
+  <mat-card-header>
+    <app-button-back></app-button-back>
+    <mat-card-title>{{ hero().name }}</mat-card-title>
+    <mat-card-subtitle>{{ hero().realName }}</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image [src]="'assets' + hero().imageUrl" alt="{{ hero().name }}" />
+  <mat-card-content>
+    <mat-divider></mat-divider>
+    <h2>Hero's information</h2>
+    <mat-list role="list">
+      <mat-list-item role="listitem"><b>Alias:</b> {{ hero().alias | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>Alignment:</b> {{ hero().alignment | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>Team:</b> {{ hero().team | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>Origin:</b> {{ hero().origin | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>First Appearance:</b> {{ hero().firstAppearance | titlecase }}</mat-list-item>
+    </mat-list>
+    <mat-divider></mat-divider>
+    <h3>Power</h3>
+    <mat-grid-list cols="2" rowHeight="50px">
+      @for (power of hero().powers; track power) {
+      <mat-grid-tile [colspan]="1" [rowspan]="1" [style.background]="'#141714'">
+        {{ power | titlecase }}
+      </mat-grid-tile>
+      }
+    </mat-grid-list>
+
+  </mat-card-content>
+</mat-card>

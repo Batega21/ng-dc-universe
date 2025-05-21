@@ -1,0 +1,75 @@
+<div class="hero-form">
+
+  <div class="hero-form-header">
+    <div>
+      <h2>{{ store.selectedHero().name }}</h2>
+      <p>{{ 'Fill this form to edit ' + hero().name }}</p>
+    </div>
+    <app-button-back></app-button-back>
+  </div>
+
+  <div class="hero-form-wrapper">
+
+    <img mat-card-image [src]="'assets' + hero().imageUrl" alt="{{ hero().name }}" width="400" height="600" />
+
+    <div class="hero-form-wrapper-form">
+      <form [formGroup]="heroForm" class="hero-form-wrapper-form">
+
+        <mat-form-field class="form-field">
+          <mat-label for="name">Name:</mat-label>
+          <input matInput id="name" type="text" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="realName">Real Name:</mat-label>
+          <input matInput id="realName" type="text" formControlName="realName">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="alias">Alias:</mat-label>
+          <input matInput id="alias" type="text" formControlName="alias">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="alignment">Alignment:</mat-label>
+          <input matInput id="alignment" type="text" formControlName="alignment">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="team">Team:</mat-label>
+          <input matInput id="team" type="text" formControlName="team">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="origin">Origin:</mat-label>
+          <input matInput id="origin" type="text" formControlName="origin">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label for="firstAppearance">First Appearance:</mat-label>
+          <input matInput id="firstAppearance" type="text" formControlName="firstAppearance">
+        </mat-form-field>
+
+        <mat-label>Powers</mat-label>
+        <section class="power-section" formGroupName="powersGroup">
+          @for (power of powers; track power) {
+          <div class="power-section-checkbox">
+            <mat-checkbox [formControlName]="power">{{ power }}</mat-checkbox>
+          </div>
+          }
+        </section>
+
+      </form>
+      <button mat-fab extended class="hero-form-button" color="primary" (click)="openDialog()"
+        [disabled]="!heroForm.valid">
+        <mat-icon>edit</mat-icon>
+        Edit {{ store.selectedHero().name }}
+      </button>
+    </div>
+  </div>
+
+  @if (store.loading()) {
+  <pre>...Loading</pre>
+  <app-loader></app-loader>
+  }
+</div>

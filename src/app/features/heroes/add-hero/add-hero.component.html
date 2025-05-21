@@ -1,0 +1,88 @@
+<div class="hero-form">
+  
+  <div class="hero-form-header">
+    <div>
+      <h2>Add a new Hero</h2>
+      <p>Creating a new Hero</p>
+    </div>
+    <app-button-back></app-button-back>
+  </div>
+
+  <div class="hero-form-wrapper">
+
+    <img mat-card-image src="assets/img/hero-placeholder.png" alt="Hero Image Placeholder" width="300" height="450" />
+
+    <div class="hero-form-wrapper-form">
+
+      <form [formGroup]="heroForm" class="hero-form-wrapper-form">
+        <!-- Name -->
+        <mat-form-field class="form-field">
+          <mat-label for="name">Hero Name</mat-label>
+          <input matInput id="name" type="text" formControlName="name" />
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Real Name</mat-label>
+          <input matInput type="text" formControlName="realName" />
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Alias</mat-label>
+          <input matInput type="text" formControlName="alias" />
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Alignment</mat-label>
+          <input matInput type="text" formControlName="alignment" />
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Team</mat-label>
+          <input matInput type="text" formControlName="team" />
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Powers</mat-label>
+          <mat-select formControlName="powers">
+            <mat-option value="Flight">Flight</mat-option>
+            <mat-option value="Force Fields">Force Fields</mat-option>
+            <mat-option value="Telepathy">Telepathy</mat-option>
+            <mat-option value="Invisibility">Invisibility</mat-option>
+            <mat-option value="X-Ray">X-Ray</mat-option>
+            <mat-option value="Super_Strength">Super Strength</mat-option>
+            <mat-option value="Martial_Arts">Martial Arts</mat-option>
+            <mat-option value="Gadgets">Gadgets</mat-option>
+            <mat-option value="Stealth">Stealth</mat-option>
+            <mat-option value="Acrobatics">Acrobatics</mat-option>
+            <mat-option value="Cybernetic Enhancements">Cybernetic Enhancements</mat-option>
+            <mat-option value="Regeneration">Regeneration</mat-option>
+            <mat-option value="Shape_Shifting">Shape Shifting</mat-option>
+            <mat-option value="Elasticity">Elasticity</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Origin</mat-label>
+          <input matInput type="text" formControlName="origin" />
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>First Appearance</mat-label>
+          <input matInput type="text" formControlName="firstAppearance" />
+        </mat-form-field>
+      </form>
+
+      <button mat-fab extended class="hero-form-button" color="primary" (click)="openDialog()"
+        [disabled]="!heroForm.valid">
+        <mat-icon>person_add</mat-icon>
+        Add New Hero!
+      </button>
+    </div>
+  </div>
+
+  @if (store.loading()) {
+  <pre>...Loading</pre>
+  <app-loader></app-loader>
+  }
+
+</div>

@@ -1,4 +1,4 @@
-# NgDcUniverse
+# The Justice League app
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.5.
 
@@ -7,53 +7,55 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Requirements
 
-## Code scaffolding
+- Angular 19
+- Node.js >= 20.x
+- The Justice League microservice.
+  - Download the micro-server repository [here](https://github.com/Batega21/justice-league-microservice).
+  - Read the `README.md` file for installation and run the microservice.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Description
 
-```bash
-ng generate component component-name
+The Justice League application uses **Angular 19** for its structure and components, **Angular Material** for a cohesive UI, and **NgRx** for predictable state management using the **SignalStore**, ensuring separation of concerns, maintainability, and scalability.
+
+## Application Structure
+
+The application employs a modular structure, organizing code into distinct, manageable units. This approach enhances maintainability, scalability, and overall code organization.
+
+```md
+──App
+  ├──Core
+  |  └──Components
+  |    ├──Footer
+  |    ├──Header
+  |    └──Not-found
+  |  ├──Constant
+  |  ├──Interfaces
+  |  └──Services
+  ├──Features
+  |  └──Heroes
+  |    ├──Hero container
+  |    ├──Add hero
+  |    ├──Edit hero
+  |    ├──Hero details
+  |    ├──Hero Form
+  |    └──Hero List
+  ├──Shared
+  |  ├──Button-back
+  |  ├──Dialog
+  |  └──Loader
+  └──State
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## The State management
 
-```bash
-ng generate --help
-```
+The state management is based on the SignalStore's NgRx API.
 
-## Building
+### Sources
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [SignalStore's NgRx](https://ngrx.io/guide/signals/signal-store)
+- [Telerik implementation reference](https://www.telerik.com/blogs/state-management-angular-applications-using-ngrx-signals-store)

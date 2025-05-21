@@ -1,0 +1,43 @@
+.hero-detail-card {
+  max-width: 800px;
+  margin: 10rem auto;
+  border: 6px solid #ccc;
+
+  .mat-mdc-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+    app-button-back {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      margin: 1rem;
+    }
+
+    .mat-mdc-card-header-text {
+      text-align: center;
+    }
+  }
+}
+.mat-mdc-card-title {
+  font-size: 4rem;
+  font-weight: bold;
+  margin: 1.5rem 0;
+  text-align: end;
+}
+
+.mat-mdc-card-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+mat-grid-list {
+  margin: 10px 0;
+}
+
+.mdc-card__media {
+  width: 20vw;
+  margin: 2rem auto;
+}
