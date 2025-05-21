@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Hero } from '../interfaces/hero';
-import { HttpClient } from '@angular/common/http';
+import { Hero, HeroesPaginated } from '../interfaces/hero';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
@@ -18,5 +18,17 @@ export class HeroService {
 
   getHeroes(): Observable<Hero[]> {
     return this.http.get<Hero[]>(`${this._heroesApi}/superheroes`);
+  }
+
+  getHeroesPaginated(
+    page: number,
+    limit: number
+  ): Observable<HeroesPaginated> {
+    const baseParams = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    return this.http.get<HeroesPaginated>(`${this._heroesApi}/superheroes/pagination`, {
+      params: baseParams,
+    });
   }
 }

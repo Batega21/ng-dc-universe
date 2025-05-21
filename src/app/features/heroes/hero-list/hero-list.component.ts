@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
@@ -7,10 +7,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+
 import { DELETE_DIALOG_DATA } from '../../../core/constant/dialog.constant';
 import { Hero } from '../../../core/interfaces/hero';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { HeroesProvider } from '../../../state/hero.store';
+import { Pagination } from '../../../core/constant/pagination';
 
 @Component({
   selector: 'app-hero-list',
@@ -21,6 +24,7 @@ import { HeroesProvider } from '../../../state/hero.store';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
+    MatPaginatorModule,
     RouterLink,
     CommonModule,
   ],
@@ -29,10 +33,19 @@ import { HeroesProvider } from '../../../state/hero.store';
   providers: [HeroesProvider],
 })
 export class HeroListComponent {
-  readonly store = inject(HeroesProvider);
-  readonly dialog = inject(MatDialog);
+  public readonly store = inject(HeroesProvider);
+  public readonly dialog = inject(MatDialog);
+  public pageSize = signal(Pagination.DEFAULT_LIMIT);
+  public currentPage = signal(Pagination.DEFAULT_PAGE);
 
   constructor() {}
+
+  public onPageChange(event: PageEvent): void {
+    this.pageSize.update(() => event.pageSize);
+    this.currentPage.update(() => event.pageIndex + 1);
+
+    this.store.getHeroesPaginated(this.currentPage(), this.pageSize());
+  }
 
   public openDialog(hero: Hero) {
     const dialogConfig = {

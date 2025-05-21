@@ -1,4 +1,5 @@
 <div class="heroes-wrapper">
+
   @for (hero of store.heroes(); track hero) {
   <mat-card class="hero-card" appearance="outlined">
     <mat-card-header>
@@ -9,9 +10,9 @@
     </mat-card-header>
     <img mat-card-image [src]="'assets' + hero.imageUrl" alt="{{ hero.name }}">
     <mat-card-content class="hero-card-content">
-        <mat-list role="list">
-          <mat-list-item role="listitem">{{ hero.alias | titlecase }}</mat-list-item>
-        </mat-list>
+      <mat-list role="list">
+        <mat-list-item role="listitem">{{ hero.alias | titlecase }}</mat-list-item>
+      </mat-list>
     </mat-card-content>
     <mat-card-actions class="hero-card-actions">
       <button mat-icon-button color="primary" class="hero-card-actions-button" [routerLink]="['/hero/edit', hero.id]"
@@ -29,4 +30,11 @@
   </mat-card>
   }
   <mat-divider></mat-divider>
+
+</div>
+
+<div class="heroes-paginator">
+  <mat-paginator [length]="store.heroesCount()" [pageSize]="pageSize()" [pageSizeOptions]="[6, 9, 21]"
+    (page)="onPageChange($event)" aria-label="Select page">
+  </mat-paginator>
 </div>

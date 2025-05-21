@@ -10,3 +10,7 @@ export interface Hero {
   firstAppearance: string;
   imageUrl: string;
 }
+export interface HeroesPaginated {
+  data: Hero[];
+  totalHeroes: number;
+}
