@@ -7,3 +7,10 @@ export enum SnackBarPosition {
   START = 'start',
   END = 'end',
 }
+
+export enum SnackBarType {
+  INFO = 'info',
+  SUCCESS = 'success',
+  ERROR = 'error',
+  WARNING = 'warning',
+}

@@ -2,7 +2,7 @@
 
 ## Main Features
 
-1. Add an new Hero. √
+1. Add a new Hero. √
 2. View all Heroes. √
 3. View Hero details by ID. √
 4. Filter Heroes with parameters. √

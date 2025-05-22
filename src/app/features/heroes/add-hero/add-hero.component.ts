@@ -22,7 +22,7 @@ import { ButtonBackComponent } from '../../../shared/button-back/button-back.com
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { HeroesProvider } from '../../../state/hero.store';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { SnackBarPosition } from '../../../core/enums/snack-bar-position.enum';
+import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
 
 @Component({
   selector: 'app-add-hero',
@@ -63,7 +63,7 @@ export class AddHeroComponent {
     firstAppearance: new FormControl(''),
   });
 
-  openNotification(message: string, type: string = 'info') {
+  openNotification(message: string, type: SnackBarType) {
     this._snackBar.open(message, 'Close', {
       duration: 4000,
       horizontalPosition: this.horizontalPosition,
@@ -100,7 +100,7 @@ export class AddHeroComponent {
 
     dialogRef.afterClosed().subscribe(() => {
       this.route.navigate(['/']);
-      this.openNotification(`${heroFormData.name} added successfully`, 'success');
+      this.openNotification(`${heroFormData.name} added successfully`, SnackBarType.SUCCESS);
     });
   }
 }

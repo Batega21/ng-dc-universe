@@ -15,7 +15,7 @@ import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { HeroesProvider } from '../../../state/hero.store';
 import { Pagination } from '../../../core/enums/pagination.enum';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { SnackBarPosition } from '../../../core/enums/snack-bar-position.enum';
+import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
 
 @Component({
   selector: 'app-hero-list',
@@ -45,7 +45,7 @@ export class HeroListComponent {
 
   constructor() {}
 
-  openNotification(message: string, type: string = 'info') {
+  openNotification(message: string, type: SnackBarType) {
     this._snackBar.open(message, 'Close', {
       duration: 4000,
       horizontalPosition: this.horizontalPosition,
@@ -75,7 +75,7 @@ export class HeroListComponent {
 
     dialogRef.afterClosed().subscribe(() => {
       this.deleteHero(hero);
-      this.openNotification(`${hero.name} deleted successfully`, 'success');
+      this.openNotification(`${hero.name} deleted successfully`, SnackBarType.SUCCESS);
     });
   }
 

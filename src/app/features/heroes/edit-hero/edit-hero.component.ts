@@ -35,7 +35,7 @@ import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { LoaderComponent } from '../../../shared/loader/loader.component';
 import { HeroesProvider } from '../../../state/hero.store';
 import { HeroPowers } from '../../../core/enums/powers.enum';
-import { SnackBarPosition } from '../../../core/enums/snack-bar-position.enum';
+import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
 
 @Component({
   selector: 'app-edit-hero',
@@ -92,7 +92,7 @@ export class EditHeroComponent {
     });
   }
 
-  openNotification(message: string, type: string = 'info') {
+  openNotification(message: string, type: SnackBarType) {
     this._snackBar.open(message, 'Close', {
       duration: 4000,
       horizontalPosition: this.horizontalPosition,
@@ -162,7 +162,7 @@ export class EditHeroComponent {
       this.route.navigate(['/']);
       this.openNotification(
         `Hero ${this.hero().name} updated successfully`,
-        'success'
+        SnackBarType.SUCCESS
       );
     });
   }

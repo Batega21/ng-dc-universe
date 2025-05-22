@@ -18,7 +18,7 @@ import {
 import { HeroService } from '../../core/services/hero.service';
 import { LoggerService } from '../../core/services/logger.service';
 import { HeroesProvider } from '../../state/hero.store';
-import { SnackBarPosition } from '../../core/enums/snack-bar-position.enum';
+import { SnackBarPosition, SnackBarType } from '../../core/enums/snack-bar.enum';
 
 @Component({
   selector: 'app-search-box',
@@ -50,7 +50,7 @@ export class SearchBoxComponent {
     }
   }
 
-  openNotification(message: string, type: string = 'info') {
+  openNotification(message: string, type: SnackBarType) {
     this._snackBar.open(message, 'Close', {
       duration: 4000,
       horizontalPosition: this.horizontalPosition,
@@ -84,7 +84,7 @@ export class SearchBoxComponent {
             });
           },
           error: (error) => {
-            this.openNotification('Hero with these parameters not found', 'error');
+            this.openNotification('Hero with these parameters not found', SnackBarType.ERROR);
             this._loggerService.error('Error fetching heroes', error);
             this.onClearFilter();
           },
@@ -101,7 +101,7 @@ export class SearchBoxComponent {
       },
       error: (error) => {
         this._loggerService.error('Error fetching hero by name', error);
-        this.openNotification('Error fetching hero by name', 'error');
+        this.openNotification('Error fetching hero by name', SnackBarType.ERROR);
         this.onClearFilter();
       },
     });
@@ -112,7 +112,7 @@ export class SearchBoxComponent {
     event.preventDefault();
     if (this.heroesQuery().length === 0) {
       this._loggerService.error('No heroes selected', this.heroesQuery());
-      this.openNotification('No heroes selected', 'error');
+      this.openNotification('No heroes selected', SnackBarType.ERROR);
       this.onClearFilter();
       return;
     }
