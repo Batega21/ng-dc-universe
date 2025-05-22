@@ -24,7 +24,6 @@ export class LoggerService {
   }
   
   public debugger(message: string): void {
-    debugger;
     console.debug(message);
   }
 }

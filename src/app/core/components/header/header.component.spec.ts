@@ -20,4 +20,8 @@ describe('HeaderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have a title', () => {
+    expect(component.title).toBe('My App');
+  });
 });
