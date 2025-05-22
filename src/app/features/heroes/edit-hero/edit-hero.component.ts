@@ -21,6 +21,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { EDIT_DIALOG_DATA } from '../../../core/constant/dialog.constant';
@@ -29,7 +34,8 @@ import { ButtonBackComponent } from '../../../shared/button-back/button-back.com
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { LoaderComponent } from '../../../shared/loader/loader.component';
 import { HeroesProvider } from '../../../state/hero.store';
-import { HeroPowers } from '../../../core/constant/powers';
+import { HeroPowers } from '../../../core/enums/powers.enum';
+import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
 
 @Component({
   selector: 'app-edit-hero',
@@ -56,6 +62,9 @@ export class EditHeroComponent {
   public error: string | null = null;
   readonly dialog = inject(MatDialog);
   public powers = Object.values(HeroPowers);
+  private _snackBar = inject(MatSnackBar);
+  private horizontalPosition: MatSnackBarHorizontalPosition = SnackBarPosition.CENTER;
+  private verticalPosition: MatSnackBarVerticalPosition = SnackBarPosition.TOP;
   @Input()
   set id(heroId: number) {
     this.fetchHeroDetails(heroId);
@@ -80,6 +89,15 @@ export class EditHeroComponent {
       origin: new FormControl(''),
       firstAppearance: new FormControl(''),
       imageUrl: new FormControl(''),
+    });
+  }
+
+  openNotification(message: string, type: SnackBarType) {
+    this._snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+      panelClass: [`snackbar-${type}`],
     });
   }
 
@@ -142,6 +160,10 @@ export class EditHeroComponent {
 
     dialogRef.afterClosed().subscribe(() => {
       this.route.navigate(['/']);
+      this.openNotification(
+        `Hero ${this.hero().name} updated successfully`,
+        SnackBarType.SUCCESS
+      );
     });
   }
 }

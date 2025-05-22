@@ -5,13 +5,20 @@ import {
   signal,
 } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { HeroService } from '../../core/services/hero.service';
-import { LoggerService } from '../../core/services/logger.service';
-import { HeroesProvider } from '../../state/hero.store';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
+
+import { HeroService } from '../../core/services/hero.service';
+import { LoggerService } from '../../core/services/logger.service';
+import { HeroesProvider } from '../../state/hero.store';
+import { SnackBarPosition, SnackBarType } from '../../core/enums/snack-bar.enum';
 
 @Component({
   selector: 'app-search-box',
@@ -32,12 +39,24 @@ export class SearchBoxComponent {
       nonNullable: true,
     }),
   });
+  private _snackBar = inject(MatSnackBar);
+  private horizontalPosition: MatSnackBarHorizontalPosition = SnackBarPosition.CENTER;
+  private verticalPosition: MatSnackBarVerticalPosition = SnackBarPosition.TOP;
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Backspace') {
       this.heroesQuery.update(() => []);
     }
+  }
+
+  openNotification(message: string, type: SnackBarType) {
+    this._snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+      panelClass: [`snackbar-${type}`],
+    });
   }
 
   onClearFilter() {
@@ -65,6 +84,7 @@ export class SearchBoxComponent {
             });
           },
           error: (error) => {
+            this.openNotification('Hero with these parameters not found', SnackBarType.ERROR);
             this._loggerService.error('Error fetching heroes', error);
             this.onClearFilter();
           },
@@ -81,6 +101,8 @@ export class SearchBoxComponent {
       },
       error: (error) => {
         this._loggerService.error('Error fetching hero by name', error);
+        this.openNotification('Error fetching hero by name', SnackBarType.ERROR);
+        this.onClearFilter();
       },
     });
   }
@@ -90,6 +112,8 @@ export class SearchBoxComponent {
     event.preventDefault();
     if (this.heroesQuery().length === 0) {
       this._loggerService.error('No heroes selected', this.heroesQuery());
+      this.openNotification('No heroes selected', SnackBarType.ERROR);
+      this.onClearFilter();
       return;
     }
     this.store.getHeroesByNames(this.heroesQuery());
