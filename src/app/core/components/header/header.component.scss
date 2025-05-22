@@ -8,14 +8,16 @@
   top: 0;
   z-index: 2;
 
-  .mat-toolbar {
-    width: fit-content;
-  }
-
   h1 {
     font-size: 1rem;
     letter-spacing: 2rem;
     margin-right: -2rem;
   }
 
+  .mat-toolbar-left {
+    justify-content: flex-start;
+  }
+  .mat-toolbar-right {
+    justify-content: flex-end;
+  }
 }

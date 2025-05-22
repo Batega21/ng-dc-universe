@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Hero, HeroesPaginated } from '../interfaces/hero';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
+import { Pagination } from '../constant/pagination';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,13 @@ export class HeroService {
       .set('limit', limit.toString());
     return this.http.get<HeroesPaginated>(`${this._heroesApi}/superheroes/pagination`, {
       params: baseParams,
+    });
+  }
+
+  getHeroesByQueryParams(queryName: string): Observable<Hero[]> {
+    const params = new HttpParams().set('name', queryName);
+    return this.http.get<Hero[]>(`${this._heroesApi}/superheroes/search`, {
+      params,
     });
   }
 }
