@@ -6,7 +6,7 @@
       <mat-icon>search</mat-icon>
     </button>
 
-    <input formControlName="searchBox" class="search-box-input" type="text" name="focus" placeholder="Search"
+    <input formControlName="searchBox" class="search-box-input" type="text" name="focus" placeholder="Search" (keyup)="onFilterChange($event)"
       id="search-input" value="" #filterInput />
 
     @if ((searchValue() ?? '').length > 0) {
