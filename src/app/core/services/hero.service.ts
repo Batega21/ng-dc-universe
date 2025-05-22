@@ -14,7 +14,7 @@ export class HeroService {
   constructor() {}
 
   getHeroById(id: string): Observable<Hero> {
-    return this.http.get<Hero>(`${this._heroesApi}/superhero/${id}`);
+    return this.http.get<Hero>(`${this._heroesApi}/superheroes/hero/${id}`);
   }
 
   getHeroes(): Observable<Hero[]> {
@@ -36,6 +36,13 @@ export class HeroService {
   getHeroesByQueryParams(queryName: string): Observable<Hero[]> {
     const params = new HttpParams().set('name', queryName);
     return this.http.get<Hero[]>(`${this._heroesApi}/superheroes/search`, {
+      params,
+    });
+  }
+
+  getHeroByName(name: string): Observable<Hero> {
+    const params = new HttpParams().set('name', encodeURIComponent(name));
+    return this.http.get<Hero>(`${this._heroesApi}/superheroes/hero`, {
       params,
     });
   }

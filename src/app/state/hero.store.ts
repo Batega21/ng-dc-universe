@@ -103,22 +103,32 @@ export const HeroesProvider = signalStore(
     },
 
     getHeroById(id: number): void {
+      const storageHeroes = JSON.parse(localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}');
       logger.log('getHeroById called with id:', id);
       patchState(store, { loading: true });
-      if (store.initialLoad()) {
-        const hero = store.heroes().find((hero) => hero.id == id);
-        logger.log(`${hero?.name} found with id: ${id}`);
-        
-        if (!hero) {
-          console.error('Hero not found');
-          patchState(store, { loading: false });
-        } else {
-          patchState(store, {
-            selectedHero: hero,
-            loading: false,
-          });
-          logger.log('Hero found:', hero);
-        }
+      if (storageHeroes.heroes?.length > 0) {
+        logger.log('Heroes loaded from local storage');
+        const hero = storageHeroes.heroes.find((hero: Hero) => hero.id == id);
+        patchState(store, {
+          selectedHero: hero,
+          loading: false,
+        });
+        logger.log('Hero found:', hero);
+      } else {
+        logger.log('Fetching Hero from API Service');
+        heroesService.getHeroById(id.toString()).subscribe({
+          next: (hero: Hero) => {
+            patchState(store, {
+              selectedHero: hero,
+              loading: false,
+            });
+            logger.log('Hero found:', hero);
+          },
+          error: (err) => {
+            logger.error('Error fetching hero from API:', err);
+            patchState(store, { loading: false });
+          },
+        });
       }
     },
 

@@ -13,6 +13,7 @@ import { HeroesProvider } from '../../state/hero.store';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-box',
@@ -24,6 +25,7 @@ export class SearchBoxComponent {
   public readonly store = inject(HeroesProvider);
   private readonly _heroesService = inject(HeroService);
   private readonly _loggerService = inject(LoggerService);
+  private readonly route = inject(Router);
   public heroesQuery = signal<string[]>([]);
   public searchValue = signal('');
   public searchBoxForm = new FormGroup({
@@ -84,6 +86,17 @@ export class SearchBoxComponent {
   }
 
   onSelectedHero(heroName: string) {
-    console.log('🚀 ~ getSelectedHero call:', heroName);
+    this._heroesService.getHeroByName(heroName).subscribe({
+      next: (response) => {
+        this.heroesQuery.update(() => []);
+        this.searchBoxForm.get('searchBox')?.setValue('');
+        this.searchValue.update(() => '');
+        this._loggerService.log('🚀 Successfully fetch selectedHero:', heroName);
+        this.route.navigate(['hero', response.id]);        
+      },
+      error: (error) => {
+        this._loggerService.error('Error fetching hero by name', error);
+      },
+    });
   }
 }
