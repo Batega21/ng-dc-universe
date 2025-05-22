@@ -21,6 +21,8 @@ import { Hero } from '../../../core/interfaces/hero';
 import { ButtonBackComponent } from '../../../shared/button-back/button-back.component';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { HeroesProvider } from '../../../state/hero.store';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { SnackBarPosition } from '../../../core/enums/snack-bar-position.enum';
 
 @Component({
   selector: 'app-add-hero',
@@ -45,6 +47,9 @@ export class AddHeroComponent {
   readonly dialog = inject(MatDialog);
   public hero: WritableSignal<Hero> = signal({} as Hero);
   public toggleUnit = signal(false);
+  private _snackBar = inject(MatSnackBar);
+  private horizontalPosition: MatSnackBarHorizontalPosition = SnackBarPosition.CENTER;
+  private verticalPosition: MatSnackBarVerticalPosition = SnackBarPosition.TOP;
 
   heroForm: FormGroup = new FormGroup({
     id: new FormControl(''),
@@ -57,6 +62,15 @@ export class AddHeroComponent {
     origin: new FormControl(''),
     firstAppearance: new FormControl(''),
   });
+
+  openNotification(message: string, type: string = 'info') {
+    this._snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+      panelClass: [`snackbar-${type}`],
+    });
+  }
 
   public openDialog(): void {
     const heroFormData: Hero = {
@@ -86,6 +100,7 @@ export class AddHeroComponent {
 
     dialogRef.afterClosed().subscribe(() => {
       this.route.navigate(['/']);
+      this.openNotification(`${heroFormData.name} added successfully`, 'success');
     });
   }
 }

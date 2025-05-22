@@ -1,28 +1,57 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 html {
   color-scheme: light dark;
-  @include mat.theme((
-    color: mat.$spring-green-palette,
-    typography: (
-      plain-family: Roboto,
-      brand-family: Roboto,
-      bold-weight: 900,
-      medium-weight: 500,
-      regular-weight: 300,
-    ),
-    density: 0
-  ));
-  @include mat.card-overrides((
-    title-text-size: 2rem,
-    title-text-weight: 900,
-    subtitle-text-color: orange,
-    elevated-container-color: red,
-  ));
+  @include mat.theme(
+    (
+      color: mat.$spring-green-palette,
+      typography: (
+        plain-family: Roboto,
+        brand-family: Roboto,
+        bold-weight: 900,
+        medium-weight: 500,
+        regular-weight: 300,
+      ),
+      density: 0,
+    )
+  );
+  @include mat.card-overrides(
+    (
+      title-text-size: 2rem,
+      title-text-weight: 900,
+      subtitle-text-color: orange,
+      elevated-container-color: red,
+    )
+  );
 }
 
 body {
   background: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font-family: Roboto, sans-serif;
+}
+
+.snackbar-success {
+  .mat-mdc-snackbar-surface {
+    background: rgb(15, 255, 183) !important;
+    color: rgb(1, 31, 11) !important;
+  }
+}
+.snackbar-error {
+  .mat-mdc-snackbar-surface {
+    background: rgb(255, 118, 118) !important;
+    color: rgb(36, 2, 2) !important;
+  }
+}
+.snackbar-warning {
+  .mat-mdc-snackbar-surface {
+    background: rgb(255, 225, 0) !important;
+    color: rgb(26, 15, 0) !important;
+  }
+}
+.snackbar-info {
+  .mat-mdc-snackbar-surface {
+    background: black !important;
+    color: rgb(198, 198, 198) !important;
+  }
 }

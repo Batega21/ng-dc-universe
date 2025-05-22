@@ -13,7 +13,7 @@ import { Hero, HeroesPaginated } from '../core/interfaces/hero';
 import { HeroService } from '../core/services/hero.service';
 import { LoggerService } from '../core/services/logger.service';
 import { delay } from 'rxjs';
-import { Pagination } from '../core/constant/pagination';
+import { Pagination } from '../core/enums/pagination.enum';
 
 // Sources:
 // https://ngrx.io/guide/signals/signal-store

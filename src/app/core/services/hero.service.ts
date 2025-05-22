@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Hero, HeroesPaginated } from '../interfaces/hero';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { Pagination } from '../constant/pagination';
+import { Pagination } from '../enums/pagination.enum';
 
 @Injectable({
   providedIn: 'root',
