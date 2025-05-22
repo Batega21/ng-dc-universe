@@ -46,4 +46,18 @@ export class HeroService {
       params,
     });
   }
+
+  getHeroesByNames(names: string[]): Observable<HeroesPaginated> {
+    const params = new HttpParams({
+      fromObject: {
+        name: names.map((name) => encodeURIComponent(name)).join(','),
+      },
+    })
+      .set('page', Pagination.DEFAULT_PAGE.toString())
+      .set('limit', Pagination.DEFAULT_LIMIT.toString());
+    return this.http.get<HeroesPaginated>(`${this._heroesApi}/superheroes/by-names`, {
+      params,
+    });
+  }
+
 }

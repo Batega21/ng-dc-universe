@@ -8,9 +8,8 @@ describe('FooterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FooterComponent]
-    })
-    .compileComponents();
+      imports: [FooterComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FooterComponent);
     component = fixture.componentInstance;
@@ -19,5 +18,10 @@ describe('FooterComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have the correct copyright year', () => {
+    const currentYear = new Date().getFullYear();
+    expect(component.copyrightYear).toBe(currentYear);
   });
 });
