@@ -1,5 +1,5 @@
 <div class="hero-toolbar">
-  <mat-toolbar>
+  <mat-toolbar class="mat-toolbar-left">
     <button mat-icon-button class="hero-icon" aria-label="hero icon-button with menu icon" [matMenuTriggerFor]="menu">
       <mat-icon>menu</mat-icon>
       <mat-menu #menu="matMenu">
@@ -15,12 +15,8 @@
       </mat-menu>
     </button>
   </mat-toolbar>
-  <h1>{{ title() | uppercase }}</h1>
-  <mat-toolbar>
-    <span class="hero-spacer"></span>
-    <button mat-fab extended class="hero-form-button" routerLink="/hero/add" routerLinkActive="activebutton">
-      <mat-icon>add</mat-icon>
-      Add Hero
-    </button>
+  <h1>{{ title | uppercase }}</h1>
+  <mat-toolbar class="mat-toolbar-right">
+    <app-search-box></app-search-box>
   </mat-toolbar>
 </div>
