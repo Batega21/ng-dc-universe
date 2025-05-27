@@ -10,6 +10,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent {
-  copyrightYear = new Date().getFullYear();
+  public copyrightYear = new Date().getFullYear();
 
 }

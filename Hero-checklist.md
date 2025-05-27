@@ -1,6 +1,12 @@
 # DC Universe
 
-## Main Features
+## Epics
+
+1. Develop Frontend architecture.
+2. Develop Basic home page.
+3. Show Heroes.
+
+## Main Features Stories
 
 1. Add a new Hero. √
 2. View all Heroes. √
@@ -38,3 +44,16 @@
 - Theme switcher (dark/light). Optional
 - Favorite hero with toggle. Optional
 - Hero stats chart with ng2-charts or D3.js. Optional
+
+## Bugs
+
+- Pagination: I don't see any more heroes when I flip through the pages. If I increase the list of heroes per page, there are no changes.
+- After filtering and showing the filtered hero, I return to home and see all the heroes again.
+- After creating a hero, I return to home and see all the heroes again.
+- When creating a hero, I can only select one power.
+- When editing and creating a hero, the edit button would be better if it said "save."
+- Fix the GitHub URL.
+- With search, the magnifying glass doesn't work if you haven't done anything.
+- I edited Superman, went to the magnifying glass, and the change doesn't appear.
+- If the hero doesn't exist, show the snackBar and redirect to home.
+- When filtering by man and selecting Batman, it shows a red card.

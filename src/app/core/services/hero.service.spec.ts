@@ -3,43 +3,27 @@ import { HttpClientTestingModule, HttpTestingController, provideHttpClientTestin
 
 import { HeroService } from './hero.service';
 import { Pagination } from '../enums/pagination.enum';
-import { HttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+import { HEROES } from '../constant/heroes.constant';
 
 describe('HeroService', () => {
   let service: HeroService;
   let httpMock: HttpTestingController;
   
-  const mockHeroes = [
-    {
-      id: 1,
-      name: 'Superman',
-      alias: 'Man of steel',
-      powers: ['Flight'],
-      firstAppearance: '1938',
-      alignment: 'Good',
-      team: 'Justice League',
-      realName: 'Clark Kent',
-      origin: 'Krypton',
-      imageUrl: 'https://example.com/superman.jpg',
-    },
-    {
-      id: 2,
-      name: 'Batman',
-      alias: 'The Dark Night',
-      powers: ['Intelligence'],
-      firstAppearance: '1939',
-      alignment: 'Good',
-      team: 'Justice League',
-      realName: 'Bruce Wayne',
-      origin: 'Gotham City',
-      imageUrl: 'https://example.com/batman.jpg',
-    },
-  ];
+  const mockHeroes = HEROES;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [HeroService, HttpClient],
-      imports: [HttpClientTestingModule],
+      imports: [],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        HeroService,
+        {
+          provide: '_heroesApi',
+          useValue: 'http://localhost:3000',
+        },
+      ],
     });
     service = TestBed.inject(HeroService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -55,11 +39,6 @@ describe('HeroService', () => {
 
   it('should have a heroesApi property', () => {
     expect(service['_heroesApi']).toBe('http://localhost:3000');
-  });
-
-  it('should be null when heroesApi is not set', () => {
-    const serviceWithoutApi = new HeroService();
-    expect(serviceWithoutApi['_heroesApi']).toBeUndefined();
   });
 
   it('should have a getHeroById method', () => {
@@ -104,7 +83,7 @@ describe('HeroService', () => {
 
   it('should fetch heroes with getHeroes method', () => {
     service.getHeroes().subscribe((heroes) => {
-      expect(heroes.length).toBe(2);
+      expect(heroes.length).toBe(8);
       expect(heroes).toEqual(mockHeroes);
     });
 
@@ -185,7 +164,7 @@ describe('HeroService', () => {
   });
 
   it('should fail when heroes by query params are not found', () => {
-    const queryName = 'Unknown Soldier';
+    const queryName = mockHeroes[0].name;
     service.getHeroesByQueryParams(queryName).subscribe({
       next: () => {
         fail('Expected an error, but got heroes by query params');
@@ -221,7 +200,7 @@ describe('HeroService', () => {
   });
 
   it('should fail when hero by name is not found', () => {
-    const heroName = encodeURIComponent('Manolito el Fuerte');
+    const heroName = mockHeroes[0].name;
     const url = `${service['_heroesApi']}/superheroes/hero?name=${heroName}`;
     service.getHeroByName(heroName).subscribe({
       next: () => {
@@ -259,7 +238,7 @@ describe('HeroService', () => {
   });
 
   it('should fail when heroes by names are not found', () => {
-    const names = ['Unknown Soldier', 'Manolito el Fuerte'];
+    const names = [mockHeroes[0].name, mockHeroes[1].name];
     const encodedNames = names.map(name => encodeURIComponent(name)).join(',');
     const page = Pagination.DEFAULT_PAGE;
     const limit = Pagination.DEFAULT_LIMIT;

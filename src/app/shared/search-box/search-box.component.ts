@@ -85,7 +85,7 @@ export class SearchBoxComponent {
           },
           error: (error) => {
             this.openNotification('Hero with these parameters not found', SnackBarType.ERROR);
-            this._loggerService.error('Error fetching heroes', error);
+            this._loggerService.error('Hero with these parameters not found', error);
             this.onClearFilter();
           },
         })
@@ -107,6 +107,7 @@ export class SearchBoxComponent {
     });
   }
 
+  // TODO: remove event parameter if not needed
   onGetAllHeroesListed(event: Event) {
     event.stopPropagation();
     event.preventDefault();

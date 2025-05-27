@@ -11,7 +11,6 @@ import {
   ReactiveFormsModule,
   Validators,
   FormBuilder,
-  FormArray,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -57,7 +56,7 @@ import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.en
 export class EditHeroComponent {
   readonly store = inject(HeroesProvider);
   private fb = inject(FormBuilder);
-  private readonly route = inject(Router);
+  private readonly router = inject(Router);
   public hero: WritableSignal<Hero> = signal({} as Hero);
   public error: string | null = null;
   readonly dialog = inject(MatDialog);
@@ -69,28 +68,26 @@ export class EditHeroComponent {
   set id(heroId: number) {
     this.fetchHeroDetails(heroId);
   }
+  get id(): number {
+    return this.hero()?.id || 0;
+  }
 
-  public heroForm: FormGroup;
-
-  constructor() {
-    const powerControls = this.powers.reduce((acc, power) => {
-      acc[power] = new FormControl(false);
-      return acc;
-    }, {} as { [key: string]: FormControl });
-
-    this.heroForm = this.fb.group({
+  public heroForm: FormGroup = this.fb.group({
       id: new FormControl(0),
       name: new FormControl('', Validators.required),
       realName: new FormControl(''),
       alias: new FormControl(''),
       alignment: new FormControl(''),
-      powersGroup: this.fb.group(powerControls),
+      powersGroup: this.fb.group(
+        this.powers.reduce((acc, power) => {
+          acc[power] = new FormControl(false);
+          return acc;
+        }, {} as { [key: string]: FormControl })),
       team: new FormControl(''),
       origin: new FormControl(''),
       firstAppearance: new FormControl(''),
       imageUrl: new FormControl(''),
     });
-  }
 
   openNotification(message: string, type: SnackBarType) {
     this._snackBar.open(message, 'Close', {
@@ -101,10 +98,10 @@ export class EditHeroComponent {
     });
   }
 
-  private fetchHeroDetails(id: number) {
+  public fetchHeroDetails(id: number) {
     this.store.getHeroById(id);
     this.hero.update(() => this.store.selectedHero());
-    if (!this.hero) {
+    if (!this.hero() || Object.keys(this.hero()).length === 0) {
       this.error = 'Hero not found';
       return;
     }
@@ -159,9 +156,9 @@ export class EditHeroComponent {
     const dialogRef = this.dialog.open(HeroDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.route.navigate(['/']);
+      this.router.navigate(['/']);
       this.openNotification(
-        `Hero ${this.hero().name} updated successfully`,
+        `${heroFormData.name} updated successfully`,
         SnackBarType.SUCCESS
       );
     });

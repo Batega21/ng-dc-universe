@@ -333,8 +333,6 @@ export const HeroesProvider = signalStore(
 
     onDestroy({ logger, heroesService, ...store }) {
       logger.log('HeroesProvider destroyed');
-      const subscription = heroesService.getHeroes().subscribe();
-      subscription.unsubscribe();
     },
   })
 );
