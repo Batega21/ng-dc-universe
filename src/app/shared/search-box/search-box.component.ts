@@ -17,7 +17,7 @@ import {
 
 import { HeroService } from '../../core/services/hero.service';
 import { LoggerService } from '../../core/services/logger.service';
-import { HeroesProvider } from '../../state/hero.store';
+import { HeroesStore } from '../../state/hero.store';
 import { SnackBarPosition, SnackBarType } from '../../core/enums/snack-bar.enum';
 
 @Component({
@@ -27,7 +27,7 @@ import { SnackBarPosition, SnackBarType } from '../../core/enums/snack-bar.enum'
   styleUrl: './search-box.component.scss',
 })
 export class SearchBoxComponent {
-  public readonly store = inject(HeroesProvider);
+  public readonly store = inject(HeroesStore);
   private readonly _heroesService = inject(HeroService);
   private readonly _loggerService = inject(LoggerService);
   private readonly route = inject(Router);

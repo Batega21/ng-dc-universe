@@ -20,7 +20,7 @@ import { ADD_DIALOG_DATA } from '../../../core/constant/dialog.constant';
 import { Hero } from '../../../core/interfaces/hero';
 import { ButtonBackComponent } from '../../../shared/button-back/button-back.component';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
 
@@ -42,7 +42,7 @@ import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.en
   styleUrls: ['./add-hero.component.scss'],
 })
 export class AddHeroComponent {
-  readonly store = inject(HeroesProvider);
+  readonly store = inject(HeroesStore);
   private readonly route = inject(Router);
   readonly dialog = inject(MatDialog);
   public hero: WritableSignal<Hero> = signal({} as Hero);

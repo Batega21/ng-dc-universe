@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ButtonBackComponent } from './button-back.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
-import { HeroesProvider } from '../../state/hero.store';
+import { HeroesStore } from '../../state/hero.store';
 import { provideHttpClient } from '@angular/common/http';
 
 describe('ButtonBackComponent', () => {
@@ -16,7 +16,7 @@ describe('ButtonBackComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        HeroesProvider,
+        HeroesStore,
         { provide: ActivatedRoute, 
           useValue: { 
             params: { subscribe: () => {} }, 

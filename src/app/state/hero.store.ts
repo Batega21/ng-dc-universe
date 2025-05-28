@@ -39,7 +39,7 @@ const initialState: heroesState = {
   selectedHero: {} as Hero,
 };
 
-export const HeroesProvider = signalStore(
+export const HeroesStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
 
@@ -108,38 +108,6 @@ export const HeroesProvider = signalStore(
       }
     },
 
-    getHeroById(id: number): void {
-      const storageHeroes = JSON.parse(
-        localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}'
-      );
-      logger.log('getHeroById called with id:', id);
-      patchState(store, { loading: true });
-      if (storageHeroes.heroes?.length > 0) {
-        logger.log('Heroes loaded from local storage');
-        const hero = storageHeroes.heroes.find((hero: Hero) => hero.id == id);
-        patchState(store, {
-          selectedHero: hero,
-          loading: false,
-        });
-        logger.log('Hero found:', hero);
-      } else {
-        logger.log('Fetching Hero from API Service');
-        heroesService.getHeroById(id.toString()).subscribe({
-          next: (hero: Hero) => {
-            patchState(store, {
-              selectedHero: hero,
-              loading: false,
-            });
-            logger.log('Hero found:', hero);
-          },
-          error: (err) => {
-            logger.error('Error fetching hero from API:', err);
-            patchState(store, { loading: false });
-          },
-        });
-      }
-    },
-
     getHeroesPaginated(page: number, limit: number): void {
       const storageHeroes = JSON.parse(
         localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}'
@@ -191,62 +159,6 @@ export const HeroesProvider = signalStore(
           },
         });
       }
-    },
-
-    addHero(hero: Hero): Hero | null {
-      patchState(store, { loading: true });
-      const heroes = [...store.heroes(), hero];
-      patchState(store, {
-        heroes: heroes,
-        loading: false,
-      });
-      logger.log('Hero added');
-      return store.heroes().find((h) => h.id === hero.id) || null;
-    },
-
-    updateHero(hero: Hero | null): void {
-      patchState(store, { loading: true });
-      logger.log('Heroes updated from local storage with hero:', hero);
-
-      const heroes = store.heroes().map((heroUpdated) => {
-        if (heroUpdated.id === hero?.id) {
-          patchState(store, {
-            selectedHero: hero,
-          });
-          logger.log('Hero updated', hero);
-          return { ...hero };
-        }
-        return heroUpdated;
-      });
-
-      patchState(store, {
-        heroes: heroes,
-      });
-      logger.log('Hero updated');
-      logger.log('SelectedHero updated', store.selectedHero());
-      patchState(store, { loading: false });
-    },
-
-    deleteSelectedHero(id: number): void {
-      patchState(store, { loading: true });
-
-      const selectedHero = store.heroes().find((hero) => hero.id === id);
-      if (!selectedHero) {
-        logger.error('Hero not found', id);
-        patchState(store, { loading: false });
-        return;
-      }
-      const updatedHeroes = store.heroes().filter((hero) => hero.id !== id);
-      patchState(store, {
-        heroes: [...updatedHeroes],
-        loading: false,
-      });
-
-      localStorage.setItem('heroes', JSON.stringify({
-        heroes: updatedHeroes,
-        heroesCount: updatedHeroes.length,
-      }));
-      logger.log('Hero successfully deleted and local storage updated');
     },
 
     getHeroesByNames(heroes: string[]): void {
@@ -312,6 +224,94 @@ export const HeroesProvider = signalStore(
           });
         }
       }
+    },
+
+    getHeroById(id: number): void {
+      const storageHeroes = JSON.parse(
+        localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}'
+      );
+      logger.log('getHeroById called with id:', id);
+      patchState(store, { loading: true });
+      if (storageHeroes.heroes?.length > 0) {
+        logger.log('Heroes loaded from local storage');
+        const hero = storageHeroes.heroes.find((hero: Hero) => hero.id == id);
+        patchState(store, {
+          selectedHero: hero,
+          loading: false,
+        });
+        logger.log('Hero found:', hero);
+      } else {
+        logger.log('Fetching Hero from API Service');
+        heroesService.getHeroById(id.toString()).subscribe({
+          next: (hero: Hero) => {
+            patchState(store, {
+              selectedHero: hero,
+              loading: false,
+            });
+            logger.log('Hero found:', hero);
+          },
+          error: (err) => {
+            logger.error('Error fetching hero from API:', err);
+            patchState(store, { loading: false });
+          },
+        });
+      }
+    },
+
+    addHero(hero: Hero): Hero | null {
+      patchState(store, { loading: true });
+      const heroes = [...store.heroes(), hero];
+      patchState(store, {
+        heroes: heroes,
+        loading: false,
+      });
+      logger.log('Hero added');
+      return store.heroes().find((h) => h.id === hero.id) || null;
+    },
+
+    updateHero(hero: Hero | null): void {
+      patchState(store, { loading: true });
+      logger.log('Heroes updated from local storage with hero:', hero);
+
+      const heroes = store.heroes().map((heroUpdated) => {
+        if (heroUpdated.id === hero?.id) {
+          patchState(store, {
+            selectedHero: hero,
+          });
+          logger.log('Hero updated', hero);
+          return { ...hero };
+        }
+        return heroUpdated;
+      });
+
+      patchState(store, {
+        heroes: heroes,
+      });
+      logger.log('Hero updated');
+      logger.log('SelectedHero updated', store.selectedHero());
+      patchState(store, { loading: false });
+    },
+
+    deleteSelectedHero(id: number): void {
+      patchState(store, { loading: true });
+
+      const selectedHero = store.heroes().find((hero) => hero.id === id);
+      if (!selectedHero) {
+        logger.error('Hero not found', id);
+        patchState(store, { loading: false });
+        return;
+      }
+      const updatedHeroes = store.heroes().filter((hero) => hero.id !== id);
+      patchState(store, {
+        heroes: [...updatedHeroes],
+        loading: false,
+      });
+
+      localStorage.setItem('heroes', JSON.stringify({
+        heroes: updatedHeroes,
+        heroesCount: updatedHeroes.length,
+      }));
+      logger.log('Hero successfully deleted and local storage updated');
     },
   })),
 

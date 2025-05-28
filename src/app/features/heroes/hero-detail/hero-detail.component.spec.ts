@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeroDetailComponent } from './hero-detail.component';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HeroService } from '../../../core/services/hero.service';
 import { provideHttpClient } from '@angular/common/http';
@@ -19,7 +19,7 @@ describe('HeroDetailComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        HeroesProvider,
+        HeroesStore,
         HeroService,
         { provide: ActivatedRoute, 
           useValue: { 

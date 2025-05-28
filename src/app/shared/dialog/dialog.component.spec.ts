@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeroDialog } from './dialog.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HeroService } from '../../core/services/hero.service';
-import { HeroesProvider } from '../../state/hero.store';
+import { HeroesStore } from '../../state/hero.store';
 import { provideHttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { provideRouter, RouterLink } from '@angular/router';
@@ -22,7 +22,7 @@ describe('HeroDialog', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         HeroService,
-        HeroesProvider,
+        HeroesStore,
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialog,

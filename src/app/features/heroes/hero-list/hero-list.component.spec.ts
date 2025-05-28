@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeroListComponent } from './hero-list.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HeroService } from '../../../core/services/hero.service';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { provideHttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,7 +26,7 @@ describe('HeroListComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         {
-          provide: HeroesProvider,
+          provide: HeroesStore,
           useValue: {
             getHeroes: () => HEROES,
             deleteSelectedHero: (id: number) => HEROES.filter(hero => hero.id !== id),

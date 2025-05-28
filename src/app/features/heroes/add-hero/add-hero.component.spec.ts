@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddHeroComponent } from './add-hero.component';
 import { ActivatedRoute, provideRouter, Router, RouterLink } from '@angular/router';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,7 +23,7 @@ describe('AddHeroComponent', () => {
         provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        HeroesProvider,
+        HeroesStore,
         { provide: MatSnackBar, useValue: {
             open: () => ({
               onAction: () => ({

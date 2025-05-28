@@ -13,7 +13,7 @@ import {
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { DialogData } from '../../core/interfaces/dialog';
-import { HeroesProvider } from '../../state/hero.store';
+import { HeroesStore } from '../../state/hero.store';
 
 @Component({
   selector: 'app-dialog',
@@ -31,7 +31,7 @@ import { HeroesProvider } from '../../state/hero.store';
   styleUrls: ['./dialog.component.scss'],
 })
 export class HeroDialog {
-  readonly store = inject(HeroesProvider);
+  readonly store = inject(HeroesStore);
   readonly dialog = inject(MatDialog);
   readonly dialogRef = inject(MatDialogRef<HeroDialog>);
   readonly data = inject<DialogData>(MAT_DIALOG_DATA);

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditHeroComponent } from './edit-hero.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { HeroService } from '../../../core/services/hero.service';
 import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
@@ -26,7 +26,7 @@ describe('EditHeroComponent', () => {
         provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        HeroesProvider,
+        HeroesStore,
         HeroService,
         { provide: MatSnackBar, useValue: {
             open: () => ({

@@ -32,7 +32,7 @@ import { Hero } from '../../../core/interfaces/hero';
 import { ButtonBackComponent } from '../../../shared/button-back/button-back.component';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { LoaderComponent } from '../../../shared/loader/loader.component';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { HeroPowers } from '../../../core/enums/powers.enum';
 import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
 
@@ -54,7 +54,7 @@ import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.en
   styleUrls: ['./edit-hero.component.scss'],
 })
 export class EditHeroComponent {
-  readonly store = inject(HeroesProvider);
+  readonly store = inject(HeroesStore);
   private fb = inject(FormBuilder);
   private readonly router = inject(Router);
   public hero: WritableSignal<Hero> = signal({} as Hero);

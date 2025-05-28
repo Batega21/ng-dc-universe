@@ -2,7 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 
 import { HeaderComponent } from './header.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { ActivatedRoute, provideRouter, RouterLink } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { DebugElement } from '@angular/core';
@@ -24,7 +24,7 @@ describe('HeaderComponent', () => {
         provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        HeroesProvider,
+        HeroesStore,
         { provide: ActivatedRoute, 
           useValue: { 
             params: { subscribe: () => {} }, 

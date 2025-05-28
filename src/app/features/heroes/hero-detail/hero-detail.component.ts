@@ -9,7 +9,7 @@ import { MatListModule } from '@angular/material/list';
 
 import { Hero } from '../../../core/interfaces/hero';
 import { ButtonBackComponent } from '../../../shared/button-back/button-back.component';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 
 @Component({
   selector: 'app-hero-detail',
@@ -28,7 +28,7 @@ import { HeroesProvider } from '../../../state/hero.store';
   providers: [],
 })
 export class HeroDetailComponent {
-  private readonly store = inject(HeroesProvider);
+  private readonly store = inject(HeroesStore);
   public hero: WritableSignal<Hero> = signal({} as Hero);
   @Input()
   set id(heroId: number) {
