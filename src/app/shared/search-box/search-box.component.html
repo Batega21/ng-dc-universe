@@ -1,7 +1,7 @@
 <div class="container">
   <form [formGroup]="searchBoxForm" class="search-box">
 
-    <button matSuffix mat-icon-button class="search-box-button search" aria-label="Search"
+    <button matSuffix mat-icon-button class="search-box-button search" aria-label="Search" disabled="{{ !searchBoxForm.valid }}"
       (click)="onGetAllHeroesListed($event)">
       <mat-icon>search</mat-icon>
     </button>

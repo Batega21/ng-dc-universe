@@ -5,7 +5,7 @@ export const HEROES: Hero[] = [
     id: 1,
     name: 'Superman',
     alias: 'Man of steel',
-    powers: ['Flight'],
+    powers: ['Super strength'],
     firstAppearance: '1938',
     alignment: 'Good',
     team: 'Justice League',

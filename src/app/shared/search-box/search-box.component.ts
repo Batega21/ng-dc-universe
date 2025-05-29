@@ -4,7 +4,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
@@ -34,11 +34,14 @@ export class SearchBoxComponent {
   public heroesQuery = signal<string[]>([]);
   public searchValue = signal('');
   public searchBoxForm = new FormGroup({
-    searchBox: new FormControl('', {
-      validators: [],
-      nonNullable: true,
-    }),
+    searchBox: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(50),
+      Validators.pattern(/^[a-zA-Z0-9\s]+$/),
+    ]),
   });
+  // TODO disabled searchBoxForm until heroesQuery is empty
   private _snackBar = inject(MatSnackBar);
   private horizontalPosition: MatSnackBarHorizontalPosition = SnackBarPosition.CENTER;
   private verticalPosition: MatSnackBarVerticalPosition = SnackBarPosition.TOP;
@@ -52,7 +55,7 @@ export class SearchBoxComponent {
 
   openNotification(message: string, type: SnackBarType) {
     this._snackBar.open(message, 'Close', {
-      duration: 4000,
+      duration: 1000,
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
       panelClass: [`snackbar-${type}`],
@@ -86,7 +89,6 @@ export class SearchBoxComponent {
           error: (error) => {
             this.openNotification('Hero with these parameters not found', SnackBarType.ERROR);
             this._loggerService.error('Hero with these parameters not found', error);
-            this.onClearFilter();
           },
         })
     }

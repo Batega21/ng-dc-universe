@@ -33,33 +33,29 @@
 
         <mat-form-field class="form-field">
           <mat-label>Alignment</mat-label>
-          <input matInput type="text" formControlName="alignment" />
+          <mat-select formControlName="alignment">
+            <mat-option value="heroes">Heroes</mat-option>
+            <mat-option value="complicated">Its' complicated</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="form-field">
           <mat-label>Team</mat-label>
-          <input matInput type="text" formControlName="team" />
-        </mat-form-field>
-
-        <mat-form-field class="form-field">
-          <mat-label>Powers</mat-label>
-          <mat-select formControlName="powers">
-            <mat-option value="Flight">Flight</mat-option>
-            <mat-option value="Force Fields">Force Fields</mat-option>
-            <mat-option value="Telepathy">Telepathy</mat-option>
-            <mat-option value="Invisibility">Invisibility</mat-option>
-            <mat-option value="X-Ray">X-Ray</mat-option>
-            <mat-option value="Super_Strength">Super Strength</mat-option>
-            <mat-option value="Martial_Arts">Martial Arts</mat-option>
-            <mat-option value="Gadgets">Gadgets</mat-option>
-            <mat-option value="Stealth">Stealth</mat-option>
-            <mat-option value="Acrobatics">Acrobatics</mat-option>
-            <mat-option value="Cybernetic Enhancements">Cybernetic Enhancements</mat-option>
-            <mat-option value="Regeneration">Regeneration</mat-option>
-            <mat-option value="Shape_Shifting">Shape Shifting</mat-option>
-            <mat-option value="Elasticity">Elasticity</mat-option>
+          <mat-select formControlName="team">
+            <mat-option value="justice">Justice League</mat-option>
+            <mat-option value="titans">Titans</mat-option>
+            <mat-option value="new">New team!</mat-option>
           </mat-select>
         </mat-form-field>
+
+        <mat-label>Powers</mat-label>
+        <section class="power-section" formGroupName="powersGroup">
+          @for (power of powers; track power) {
+          <div class="power-section-checkbox">
+            <mat-checkbox [formControlName]="power">{{ power }}</mat-checkbox>
+          </div>
+          }
+        </section>
 
         <mat-form-field class="form-field">
           <mat-label>Origin</mat-label>
@@ -75,14 +71,8 @@
       <button mat-fab extended class="hero-form-button" color="primary" (click)="openDialog()"
         [disabled]="!heroForm.valid">
         <mat-icon>person_add</mat-icon>
-        Add New Hero!
+        Save new Hero!
       </button>
     </div>
   </div>
-
-  @if (store.loading()) {
-  <pre>...Loading</pre>
-  <app-loader></app-loader>
-  }
-
 </div>

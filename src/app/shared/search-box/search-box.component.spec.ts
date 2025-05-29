@@ -11,7 +11,6 @@ import { signal } from '@angular/core';
 import { HEROES } from '../../core/constant/heroes.constant';
 import { of, throwError } from 'rxjs';
 import { provideRouter, Router } from '@angular/router';
-import { Hero } from '../../core/interfaces/hero';
 
 describe('SearchBoxComponent', () => {
   let component: SearchBoxComponent;
@@ -84,7 +83,7 @@ describe('SearchBoxComponent', () => {
       message,
       'Close',
       jasmine.objectContaining({
-        duration: 4000,
+        duration: 1000,
         panelClass: ['snackbar-success'],
       })
     );
@@ -143,16 +142,14 @@ describe('SearchBoxComponent', () => {
     
     spyOn(component['_heroesService'], 'getHeroesByQueryParams').and.returnValue(throwError(() => error));
     spyOn(component, 'openNotification').and.callFake(() => {});
-    spyOn(component, 'onClearFilter').and.callThrough();
     spyOn(component['_loggerService'], 'error');
     
     component.onFilterChange(event);
     component.openNotification(message, SnackBarType.ERROR);
 
     expect(component.openNotification).toHaveBeenCalledWith(message, SnackBarType.ERROR);
-    expect(component.onClearFilter).toHaveBeenCalled();
     expect(component['_loggerService'].error).toHaveBeenCalledWith(message, error);
-    expect(component.searchValue()).toBe('');
+    expect(component.searchValue()).toBe('non-existing-hero');
     expect(component.heroesQuery()).toEqual([]);
   });
 

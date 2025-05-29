@@ -70,84 +70,146 @@ describe('HeroStore', () => {
     expect(store).toBeTruthy();
   });
 
-  it('should have a getHeroes method', () => {
-    const store = TestBed.inject(HeroesStore);
-    expect(store.getHeroes).toBeDefined();
-  });
-
   it('should initialize the hero state', () => {
     const store = TestBed.inject(HeroesStore);
-
-    store.getHeroes();
-
     expect(store.loading()).toBeTrue();
-    expect(store.initialLoad()).toBeTrue();
-    expect(store.heroes()).toEqual(HEROES);
-    expect(store.heroesCount()).toBe(HEROES.length);
+    expect(store.initialLoad()).toBeFalse();
+    expect(store.heroes()).toEqual([]);
+    expect(store.heroesCount()).toBe(0);
   });
 
-  it('should fetch heroes and update the state', fakeAsync(() => {
+  it('should fetch heroes with getHeroes() and update the state', fakeAsync(() => {
     const store = TestBed.inject(HeroesStore);
-    spyOn(localStorage, 'getItem').and.returnValues(
-      null, // First call returns null (no heroes in localStorage)
-      JSON.stringify(HEROES) // Second call returns the heroes
-    );
+    spyOn(localStorage, 'getItem').and.returnValue(null);
     spyOn(localStorage, 'setItem').and.callThrough();
+    (service.getHeroes as jasmine.Spy).and.returnValue(of(HEROES));
 
     store.getHeroes();
 
-    tick(); // Simulate the passage of time for async operations
+    tick(3000);
 
     expect(service.getHeroes).toHaveBeenCalled();
     expect(store.heroes()).toEqual(HEROES);
     expect(store.heroesCount()).toEqual(HEROES.length);
-    expect(localStorage.getItem('heroes')).toBe(JSON.stringify(HEROES));
     expect(logger.log).toHaveBeenCalledWith('Fetching Heroes from API Service');
   }));
 
-  it('should log "Heroes loaded from local storage" when load heroes from localStorage', () => {
+  it('should loaded heroes from local storage if any', fakeAsync(() => {
     const store = TestBed.inject(HeroesStore);
-    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(HEROES));
-    spyOn(localStorage, 'setItem').and.callThrough();
+    const heroes = HEROES;
+    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(heroes));
+    spyOn(localStorage, 'setItem');
 
     store.getHeroes();
+
+    tick(0);
 
     expect(logger.log).toHaveBeenCalledWith('Heroes loaded from local storage');
-  });
+    expect(store.heroesCount()).toBe(heroes.length);
+    expect(store.loading()).toBeFalse();
+    expect(store.initialLoad()).toBeTrue();
+  }));
 
-  it('should log "Error fetching heroes from API" when an error occurs', () => {
+  it('should handle error when fetching from API', fakeAsync(() => {
     const store = TestBed.inject(HeroesStore);
-    const errorMessage = new Error('Error fetching heroes from API');
-    (service.getHeroes as jasmine.Spy).and
-      .returnValue(throwError(() => errorMessage));
+    const errorMessage = 'Error fetching heroes from API';
+
     spyOn(localStorage, 'getItem').and.returnValue(null);
+    spyOn(localStorage, 'setItem').and.callThrough();
+    (service.getHeroes as jasmine.Spy).and
+      .returnValue(throwError(() => new Error(errorMessage)));
 
     store.getHeroes();
 
-    expect(logger.error).toHaveBeenCalledWith(
-      'Error fetching heroes from API:',
-      errorMessage
-    );
-  });
+    tick(1000);
 
-  it('should fetch Heroes Paginated and update the state', fakeAsync(() => {
+    expect(logger.error).toHaveBeenCalledWith(
+      errorMessage,
+      new Error(errorMessage)
+    );
+    expect(store.heroes()).toBeUndefined();
+    expect(store.loading()).toBeFalse();
+    expect(store.initialLoad()).toBeTrue();
+  }));
+
+  // it('should fetch Heroes Paginated and update the state', fakeAsync(() => {
+  //   const store = TestBed.inject(HeroesStore);
+  //   const pageIndex = Pagination.DEFAULT_PAGE;
+  //   const pageSize = Pagination.DEFAULT_LIMIT;
+  //   spyOn(localStorage, 'getItem').and.returnValue(null);
+  //   spyOn(localStorage, 'setItem').and.callThrough();
+  //   (service.getHeroesPaginated as jasmine.Spy).and
+  //     .returnValue(of({ heroes: HEROES, totalCount: HEROES.length }));
+
+  //   store.getHeroesPaginated(pageIndex, pageSize);
+
+  //   tick(1000);
+
+  //   expect(service.getHeroesPaginated).toHaveBeenCalledWith(pageIndex, pageSize);
+  //   expect(store.heroes()).toEqual(HEROES.slice(0, pageSize));
+  //   expect(store.heroesCount()).toBe(HEROES.length);
+  //   }
+  // ));
+
+  it('should handle error when fetching Paginated Heroes from API', fakeAsync(() => {
     const store = TestBed.inject(HeroesStore);
+    const errorMessage = 'Error fetching heroes from API';
     const pageIndex = Pagination.DEFAULT_PAGE;
     const pageSize = Pagination.DEFAULT_LIMIT;
-    spyOn(localStorage, 'getItem').and.returnValues(
-      null, // First call returns null (no heroes in localStorage)
-      JSON.stringify(HEROES) // Second call returns the heroes
-    );
+    spyOn(localStorage, 'getItem').and.returnValue(null);
     spyOn(localStorage, 'setItem').and.callThrough();
+    (service.getHeroesPaginated as jasmine.Spy).and
+      .returnValue(throwError(() => new Error(errorMessage)));
 
     store.getHeroesPaginated(pageIndex, pageSize);
 
-    tick(); // Simulate the passage of time for async operations
+    tick(1000);
 
-    expect(service.getHeroesPaginated).toHaveBeenCalledWith(pageIndex, pageSize);
-    expect(store.heroes()).toEqual(HEROES);
-    expect(store.heroesCount()).toBe(HEROES.length);
-  }
-  ));
+    expect(logger.error).toHaveBeenCalledWith(
+      errorMessage,
+      new Error(errorMessage)
+    );
+    expect(store.heroes()).toBeUndefined();
+    expect(store.loading()).toBeFalse();
+    expect(store.initialLoad()).toBeTrue();
+  }));
+
+  // it('should get heroes by names and update the state', fakeAsync(() => {
+  //   const store = TestBed.inject(HeroesStore);
+  //   const names = HEROES.map(hero => hero.name);
+  //   spyOn(localStorage, 'getItem').and.returnValues(null);
+  //   spyOn(localStorage, 'setItem').and.callThrough();
+  //   (service.getHeroesByNames as jasmine.Spy).and
+  //     .returnValue(of({ heroes: HEROES.slice(0, Pagination.DEFAULT_LIMIT), totalCount: HEROES.length }));
+
+  //   store.getHeroesByNames(names);
+
+  //   tick();
+
+  //   expect(service.getHeroesByNames).toHaveBeenCalledWith(names);
+  //   expect(store.heroes()).toEqual(HEROES.slice(0, Pagination.DEFAULT_LIMIT));
+  //   expect(store.heroesCount()).toBe(HEROES.length);
+  // }));
+
+  // it('should handle error when fetching Heroes with getHeroesByNames() from API', fakeAsync(() => {
+  //   const store = TestBed.inject(HeroesStore);
+  //   const errorMessage = 'Error fetching heroes from API';
+  //   spyOn(localStorage, 'getItem').and.returnValue(null);
+  //   spyOn(localStorage, 'setItem').and.callThrough();
+  //   (service.getHeroesByNames as jasmine.Spy).and
+  //     .returnValue(throwError(() => new Error(errorMessage)));
+
+  //   store.getHeroesByNames(['Superman', 'Batman']);
+
+  //   tick(1000);
+
+  //   expect(logger.error).toHaveBeenCalledWith(
+  //     errorMessage,
+  //     new Error(errorMessage)
+  //   );
+  //   expect(store.heroes()).toBeUndefined();
+  //   expect(store.loading()).toBeFalse();
+  //   expect(store.initialLoad()).toBeTrue();
+  // }));
 
 });

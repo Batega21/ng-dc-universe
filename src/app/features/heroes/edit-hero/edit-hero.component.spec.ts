@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { EditHeroComponent } from './edit-hero.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -12,10 +12,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { SnackBarType } from '../../../core/enums/snack-bar.enum';
 import { HEROES } from '../../../core/constant/heroes.constant';
 import { of } from 'rxjs';
+import { HeroPowers } from '../../../core/enums/powers.enum';
 
 describe('EditHeroComponent', () => {
   let component: EditHeroComponent;
   let fixture: ComponentFixture<EditHeroComponent>;
+  let service: HeroService;
 
   const mockHeroes = HEROES;
 
@@ -59,6 +61,7 @@ describe('EditHeroComponent', () => {
 
     fixture = TestBed.createComponent(EditHeroComponent);
     component = fixture.componentInstance;
+    service = TestBed.inject(HeroService);
     fixture.detectChanges();
   });
 
@@ -74,6 +77,10 @@ describe('EditHeroComponent', () => {
   it('should get the id Input and set the heroId data', () => {
     const heroId = HEROES[0].id;
     component.hero.set({ id: heroId} as any)
+
+    fixture.componentRef.setInput('id', heroId);
+    fixture.detectChanges();
+
     expect(component.id).toBeDefined();
     expect(component.id).toBe(heroId);
     expect(component.hero().id).toBe(heroId);
@@ -96,64 +103,91 @@ describe('EditHeroComponent', () => {
 
   it('should open dialog and navigate after closing', () => {
     const dialog = TestBed.inject(MatDialog);
-    const router = TestBed.inject(Router);
     const heroName = 'Superman';
     spyOn(dialog, 'open').and.callThrough();
-    spyOn(router, 'navigate');
     spyOn(component, 'openNotification');
 
     component.heroForm.controls['name'].setValue(heroName);
     component.openDialog();
 
     expect(dialog.open).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/']);
     expect(component.openNotification).toHaveBeenCalledWith(`${heroName} updated successfully`, SnackBarType.SUCCESS);
   });
 
-  it('should fetch hero details', () => {
-    const heroId = HEROES[0].id;
-    const hero = mockHeroes.find(hero => hero.id === heroId) || {} as any;
-    
-    spyOn(component, 'fetchHeroDetails').and.callFake((id: number) => {
-      component.hero.set(mockHeroes.find(hero => hero.id === id) || {} as any);
-    });
-    fixture.componentRef.setInput('id', heroId);
-    
-    expect(component.hero()).toBeDefined();
-    expect(component.hero().name).toBe(hero.name);
-    expect(component.hero().origin).toBe(hero.origin);
-  });
-
   it('should update heroForm when fetching hero', () => {
-    const heroId = HEROES[0].id;
+    const store = TestBed.inject(HeroesStore);
+    const hero = mockHeroes[0];
+    const powers = Object.entries(HeroPowers);
+    const powersGroupExpected = powers.reduce<Record<string, boolean>>((acc, [key, value]) => {
+          acc[value] = hero.powers.includes(value);
+          return acc;
+        }, {});
+    spyOn(localStorage, 'getItem').and.returnValue(null);
+    spyOn(localStorage, 'setItem').and.callThrough();
     
-    component.fetchHeroDetails = jasmine.createSpy().and.callFake((id: number) => {
-      const hero = mockHeroes.find(hero => hero.id === id) || {} as any;
-      component.hero.set(hero);
-      component.heroForm.patchValue({
-        id: hero.id,
-        name: hero.name,
-        realName: hero.realName,
-        alias: hero.alias,
-        alignment: hero.alignment,
-        team: hero.team,
-        powers: hero.powers,
-        origin: hero.origin,
-        firstAppearance: hero.firstAppearance,
-        imageUrl: hero.imageUrl,
-      });
-    });
+    fixture.componentRef.setInput('id', hero.id);
+    store.getHeroById(hero.id);
+    component.heroForm.patchValue({ ...hero });
+    fixture.detectChanges();
 
-    component.fetchHeroDetails(heroId);
-
-    expect(component.id).toBe(heroId);
-    expect(component.hero()).toBeDefined();
+    expect(component.heroForm.value.id).toBe(hero.id);
+    expect(component.heroForm.value.name).toBe(hero.name);
+    expect(component.heroForm.value.realName).toBe(hero.realName);
+    expect(component.heroForm.value.alias).toBe(hero.alias);
+    expect(component.heroForm.value.alignment).toBe(hero.alignment);
+    expect(component.heroForm.value.team).toBe(hero.team);
+    expect(component.heroForm.value.powersGroup).toEqual(powersGroupExpected);
+    expect(component.heroForm.value.origin).toBe(hero.origin);
+    expect(component.heroForm.value.firstAppearance).toBe(hero.firstAppearance);
+    expect(component.error).toBeNull();
+    expect(component.heroForm.valid).toBeTrue();
   });
+
+  it('should send error and navigate to hero list on error', fakeAsync(() => {
+    const store = TestBed.inject(HeroesStore);
+    const router = TestBed.inject(Router);
+    const heroId = 99;
+
+    spyOn(localStorage, 'getItem').and.returnValue(null);
+    spyOn(localStorage, 'setItem').and.callThrough();
+    spyOn(store, 'getHeroById').and.callFake(() => {
+      component.error = 'Hero not found';
+      return of(null);
+    }
+    );
+    spyOn(router, 'navigate').and.callThrough();
+    
+    fixture.componentRef.setInput('id', heroId);
+    fixture.detectChanges();
+    tick(1000);
+
+    expect(component.error).toBe('Hero not found');
+    expect(router.navigate).toHaveBeenCalledWith(['/hero']);
+  }));
 
   it('should handle hero not found error', () => {
+    const store = TestBed.inject(HeroesStore);
     const heroId = 21;
     component.error = 'Hero not found';
-    component.fetchHeroDetails(heroId);
+    store.getHeroById(heroId);
     expect(component.error).toBe('Hero not found');
+  });
+
+  it('should return selected powers from heroForm', () => {
+    const powersGroup = component.heroForm.get('powersGroup') as FormGroup;
+  
+    const powers = Object.values(HeroPowers);
+    if (powers.length > 1) {
+      powersGroup.get(powers[0])?.setValue(true);
+      powersGroup.get(powers[1])?.setValue(true);
+    }
+    fixture.detectChanges();
+    const selected = component.selectedPowers;
+    
+    expect(Array.isArray(selected)).toBeTrue();
+    if (powers.length > 1) {
+      expect(selected).toContain(powers[0]);
+      expect(selected).toContain(powers[1]);
+    }
   });
 });

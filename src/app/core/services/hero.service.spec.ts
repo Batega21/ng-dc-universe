@@ -41,13 +41,38 @@ describe('HeroService', () => {
     expect(service['_heroesApi']).toBe('http://localhost:3000');
   });
 
-  it('should have a getHeroById method', () => {
-    expect(service.getHeroById).toBeDefined();
+  // CRUD operations
+  it('should CREATE a hero with addHero method', () => {
+    const newHero = HEROES[0];
+    service.addHero(newHero).subscribe((hero) => {
+      expect(hero).toEqual(newHero);
+    });
+
+    const req = httpMock.expectOne(`${service['_heroesApi']}/superheroes`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(newHero);
+    req.flush(newHero);
+  });
+  it('should fail when CREATE a hero', () => {
+    const newHero = HEROES[0];
+    service.addHero(newHero).subscribe({
+      next: () => {
+        fail('Expected an error, but got a hero instead');
+      },
+      error: (error) => {
+        expect(error.statusText).toBe('Bad Request');
+        expect(error.status).toBe(400);
+        expect(error.error).toBe('Error adding hero');
+      }
+    });
+
+    const req = httpMock.expectOne(`${service['_heroesApi']}/superheroes`);
+    req.flush('Error adding hero', { status: 400, statusText: 'Bad Request' });
   });
 
-  it('should fetch a hero with getHeroById method', () => {
-    const heroId = '1';
-    const url = `${service['_heroesApi']}/superheroes/hero/${heroId}`;
+  it('should GET a hero with getHeroById() method', () => {
+    const heroId = 1;
+    const url = `${service['_heroesApi']}/superheroes/${heroId}`;
     service.getHeroById(heroId).subscribe((hero) => {
       expect(hero).toEqual(mockHeroes[0]);
     });
@@ -57,9 +82,9 @@ describe('HeroService', () => {
     req.flush(mockHeroes[0]);
   });
 
-  it('should fail when hero is not found', () => {
-    const heroId = '7';
-    const url = `${service['_heroesApi']}/superheroes/hero/${heroId}`;
+  it('should fail when hero by ID is not found', () => {
+    const heroId = 7;
+    const url = `${service['_heroesApi']}/superheroes/${heroId}`;
 
     service.getHeroById(heroId).subscribe({
       next: () => {
@@ -77,11 +102,7 @@ describe('HeroService', () => {
     req.flush('Hero not found', { status: 404, statusText: 'Not Found' });
   });
 
-  it('should have a getHeroes method', () => {
-    expect(service.getHeroes).toBeDefined();
-  });
-
-  it('should fetch heroes with getHeroes method', () => {
+  it('should GET heroes with getHeroes() method', () => {
     service.getHeroes().subscribe((heroes) => {
       expect(heroes.length).toBe(8);
       expect(heroes).toEqual(mockHeroes);
@@ -92,7 +113,7 @@ describe('HeroService', () => {
     req.flush(mockHeroes);  
   });
 
-  it('should fail when heroes are not found', () => {
+  it('should fail when Heroes are not found', () => {
     service.getHeroes().subscribe({
       next: () => {
         fail('Expected an error, but got heroes');
@@ -108,11 +129,7 @@ describe('HeroService', () => {
     req.flush('Heroes not found', { status: 404, statusText: 'Not Found' });
   });
 
-  it('should have a getHeroesPaginated method', () => {
-    expect(service.getHeroesPaginated).toBeDefined();
-  });
-
-  it('should fetch paginated heroes with getHeroesPaginated method', () => {
+  it('should GET heroes with getHeroesPaginated() method', () => {
     const page = Pagination.DEFAULT_PAGE;
     const limit = Pagination.DEFAULT_LIMIT;
     const responseData = {
@@ -128,7 +145,7 @@ describe('HeroService', () => {
     req.flush(responseData);
   });
 
-  it('should fail when paginated heroes are not found', () => {
+  it('should fail when heroes paginated are not found', () => {
     const page = Pagination.DEFAULT_PAGE;
     const limit = Pagination.DEFAULT_LIMIT;
     const url = `${service['_heroesApi']}/superheroes/pagination?page=${page}&limit=${limit}`;
@@ -147,11 +164,7 @@ describe('HeroService', () => {
     req.flush('Paginated heroes not found', { status: 404, statusText: 'Not Found' });
   });
 
-  it('should have a getHeroesByQueryParams method', () => {
-    expect(service.getHeroesByQueryParams).toBeDefined();
-  });
-
-  it('should fetch heroes by query params with getHeroesByQueryParams method', () => {
+  it('should GET heroes with getHeroesByQueryParams() method', () => {
     const queryName = 'Superman';
     service.getHeroesByQueryParams(queryName).subscribe((heroes) => {
       expect(heroes.length).toBe(1);
@@ -163,7 +176,7 @@ describe('HeroService', () => {
     req.flush([mockHeroes[0]]);
   });
 
-  it('should fail when heroes by query params are not found', () => {
+  it('should fail when heroes by query are not found', () => {
     const queryName = mockHeroes[0].name;
     service.getHeroesByQueryParams(queryName).subscribe({
       next: () => {
@@ -178,13 +191,9 @@ describe('HeroService', () => {
 
     const req = httpMock.expectOne(`${service['_heroesApi']}/superheroes/search?name=${queryName}`);
     req.flush('Heroes by query params not found', { status: 404, statusText: 'Not Found' });
-  });  
-
-  it('should have a getHeroByName method', () => {
-    expect(service.getHeroByName).toBeDefined();
   });
 
-  it('should fetch a hero by name with getHeroByName method', () => {
+  it('should GET a hero by name with getHeroByName() method', () => {
     const heroName = 'Superman';
     service.getHeroByName(heroName).subscribe((hero) => {
       expect(hero).toEqual(mockHeroes[0]);
@@ -193,10 +202,6 @@ describe('HeroService', () => {
     const req = httpMock.expectOne(`${service['_heroesApi']}/superheroes/hero?name=${encodeURIComponent(heroName)}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockHeroes[0]);
-  });
-
-  it('should have a getHeroesByNames method', () => {
-    expect(service.getHeroesByNames).toBeDefined();
   });
 
   it('should fail when hero by name is not found', () => {
@@ -217,7 +222,7 @@ describe('HeroService', () => {
     req.flush('Hero by name not found', { status: 404, statusText: 'Not Found' });
   });
 
-  it('should fetch heroes by names with the getHerosByNames method', () => {
+  it('should GET heroes by names with the getHeroesByNames() method', () => {
     const names = ['Superman', 'Batman'];
     const encodedNames = names.map(name => encodeURIComponent(name)).join(',');
     const page = Pagination.DEFAULT_PAGE;
@@ -258,4 +263,49 @@ describe('HeroService', () => {
     const req = httpMock.expectOne(url);
     req.flush('Heroes by names not found', { status: 404, statusText: 'Not Found' });
   });
+
+  it('should UPDATE a hero by id with updateHero() method', () => {
+    const updatedHero = { ...mockHeroes[0], name: 'Updated Superman' };
+    service.updateHero(updatedHero).subscribe((hero) => {
+      expect(hero).toEqual(updatedHero);
+    });
+
+    const req = httpMock.expectOne(`${service['_heroesApi']}/superheroes/${updatedHero.id}`);
+
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(updatedHero);
+    req.flush(updatedHero);
+  });
+
+  it('should fail when updating a hero', () => {
+    const updatedHero = { ...mockHeroes[0], name: 'Updated Superman' };
+    const message = 'Error updating hero';
+    const url = `${service['_heroesApi']}/superheroes/${updatedHero.id}`;
+    service.updateHero(updatedHero).subscribe({
+      next: () => {
+        fail('Expected an error, but got an updated hero');
+      },
+      error: (error) => {
+        expect(error.status).toBe(400);
+        expect(error.statusText).toBe('Bad Request');
+        expect(error.error).toBe(message);
+      }
+    });
+
+    const req = httpMock.expectOne(url);
+    req.flush(message, { status: 400, statusText: 'Bad Request' });
+  });
+
+  it('should DELETE a hero with deleteHero() method', () => {
+    const heroId = HEROES[0].id;
+    const url = `${service['_heroesApi']}/superheroes/${heroId}`;
+    service.deleteHero(heroId).subscribe((response) => {
+      expect(response).toBeNull();
+    });
+
+    const req = httpMock.expectOne(url);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
+  });
+
 });

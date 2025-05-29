@@ -13,4 +13,5 @@ export enum SnackBarType {
   SUCCESS = 'success',
   ERROR = 'error',
   WARNING = 'warning',
+  CLOSE = 'close',
 }

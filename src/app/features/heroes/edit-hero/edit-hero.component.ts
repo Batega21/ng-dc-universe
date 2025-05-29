@@ -1,5 +1,6 @@
 import {
   Component,
+  effect,
   inject,
   Input,
   signal,
@@ -34,7 +35,10 @@ import { HeroDialog } from '../../../shared/dialog/dialog.component';
 import { LoaderComponent } from '../../../shared/loader/loader.component';
 import { HeroesStore } from '../../../state/hero.store';
 import { HeroPowers } from '../../../core/enums/powers.enum';
-import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
+import {
+  SnackBarPosition,
+  SnackBarType,
+} from '../../../core/enums/snack-bar.enum';
 
 @Component({
   selector: 'app-edit-hero',
@@ -61,33 +65,72 @@ export class EditHeroComponent {
   public error: string | null = null;
   readonly dialog = inject(MatDialog);
   public powers = Object.values(HeroPowers);
+  public attemptedFetch = false;
   private _snackBar = inject(MatSnackBar);
-  private horizontalPosition: MatSnackBarHorizontalPosition = SnackBarPosition.CENTER;
+  private horizontalPosition: MatSnackBarHorizontalPosition =
+    SnackBarPosition.CENTER;
   private verticalPosition: MatSnackBarVerticalPosition = SnackBarPosition.TOP;
   @Input()
   set id(heroId: number) {
-    this.fetchHeroDetails(heroId);
+    this.store.getHeroById(heroId);
   }
   get id(): number {
-    return this.hero()?.id || 0;
+    return this.hero().id;
   }
 
   public heroForm: FormGroup = this.fb.group({
-      id: new FormControl(0),
-      name: new FormControl('', Validators.required),
-      realName: new FormControl(''),
-      alias: new FormControl(''),
-      alignment: new FormControl(''),
-      powersGroup: this.fb.group(
-        this.powers.reduce((acc, power) => {
-          acc[power] = new FormControl(false);
-          return acc;
-        }, {} as { [key: string]: FormControl })),
-      team: new FormControl(''),
-      origin: new FormControl(''),
-      firstAppearance: new FormControl(''),
-      imageUrl: new FormControl(''),
+    id: new FormControl(0, Validators.required),
+    name: new FormControl('', [
+      Validators.minLength(3),
+      Validators.maxLength(50),
+      Validators.pattern(/^[a-zA-Z0-9\s-']+$/),
+    ]),
+    realName: new FormControl('', [
+      Validators.minLength(3),
+      Validators.maxLength(50),
+      Validators.pattern(/^[a-zA-Z0-9\s-']+$/),
+    ]),
+    alias: new FormControl('', [Validators.pattern(/^[a-zA-Z0-9\s']+$/)]),
+    alignment: new FormControl(''),
+    powersGroup: this.fb.group(
+      this.powers.reduce((acc, power) => {
+        acc[power] = new FormControl(false);
+        return acc;
+      }, {} as { [key: string]: FormControl })
+    ),
+    team: new FormControl(''),
+    origin: new FormControl('', [Validators.pattern(/^[a-zA-Z0-9\s']+$/)]),
+    firstAppearance: new FormControl('', [
+      Validators.pattern(/^[a-zA-Z0-9\s#()/,]+$/),
+    ]),
+  });
+
+  constructor() {
+    effect(() => {
+      const currentHero = this.store.selectedHero();
+      this.hero.set(this.store.selectedHero());
+
+      if (currentHero && (Object.keys(currentHero).length > 0 || currentHero.id)) {
+        this.heroForm.patchValue({
+          id: currentHero.id,
+          name: currentHero.name,
+          realName: currentHero.realName,
+          alias: currentHero.alias,
+          alignment: currentHero.alignment,
+          team: currentHero.team,
+          powersGroup: this.powers.reduce((acc, power) => {
+            acc[power] = (currentHero.powers ?? []).includes(power);
+            return acc;
+          }, {} as { [key: string]: boolean }),
+          origin: currentHero.origin,
+          firstAppearance: currentHero.firstAppearance,
+        });
+      } else if (this.attemptedFetch) {
+        this.error = 'Hero not found';
+        this.router.navigate(['/hero']);
+      }
     });
+  }
 
   openNotification(message: string, type: SnackBarType) {
     this._snackBar.open(message, 'Close', {
@@ -95,27 +138,6 @@ export class EditHeroComponent {
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
       panelClass: [`snackbar-${type}`],
-    });
-  }
-
-  public fetchHeroDetails(id: number) {
-    this.store.getHeroById(id);
-    this.hero.update(() => this.store.selectedHero());
-    if (!this.hero() || Object.keys(this.hero()).length === 0) {
-      this.error = 'Hero not found';
-      return;
-    }
-    this.heroForm.patchValue({
-      id: this.hero().id,
-      name: this.hero().name,
-      realName: this.hero().realName,
-      alias: this.hero().alias,
-      alignment: this.hero().alignment,
-      team: this.hero().team,
-      powers: this.hero().powers,
-      origin: this.hero().origin,
-      firstAppearance: this.hero().firstAppearance,
-      imageUrl: this.hero().imageUrl,
     });
   }
 
@@ -129,15 +151,14 @@ export class EditHeroComponent {
   public openDialog(): void {
     const heroFormData: Hero = {
       ...this.hero(),
-      name: this.heroForm.value.name || '',
-      realName: this.heroForm.value.realName || '',
-      alias: this.heroForm.value.alias || '',
-      alignment: this.heroForm.value.alignment || '',
-      team: this.heroForm.value.team || '',
-      powers: this.selectedPowers || '',
-      origin: this.heroForm.value.origin || '',
-      firstAppearance: this.heroForm.value.firstAppearance || '',
-      imageUrl: this.heroForm.value.imageUrl || '',
+      name: this.heroForm.value.name,
+      realName: this.heroForm.value.realName,
+      alias: this.heroForm.value.alias,
+      alignment: this.heroForm.value.alignment,
+      team: this.heroForm.value.team,
+      powers: this.selectedPowers,
+      origin: this.heroForm.value.origin,
+      firstAppearance: this.heroForm.value.firstAppearance,
     } as Hero;
 
     const dialogConfig = {
@@ -147,7 +168,7 @@ export class EditHeroComponent {
         message: `Updating ${
           this.hero().name
         } may result in creating another Multiverse... Are you sure you want to proceed?`,
-        hero: heroFormData || ({} as Hero),
+        hero: heroFormData,
         actionType: 'edit',
         actionCallback: this.store.updateHero,
       },
@@ -156,7 +177,6 @@ export class EditHeroComponent {
     const dialogRef = this.dialog.open(HeroDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.router.navigate(['/']);
       this.openNotification(
         `${heroFormData.name} updated successfully`,
         SnackBarType.SUCCESS

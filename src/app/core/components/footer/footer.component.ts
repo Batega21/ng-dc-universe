@@ -5,7 +5,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
-  imports: [MatToolbarModule, MatIconModule, RouterLink, RouterLinkActive],
+  imports: [MatToolbarModule, MatIconModule],
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })

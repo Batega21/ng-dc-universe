@@ -3,14 +3,14 @@
   <div class="hero-form-header">
     <div>
       <h2>{{ store.selectedHero().name }}</h2>
-      <p>{{ 'Fill this form to edit ' + hero().name }}</p>
+      <p>{{ 'Fill this form to edit ' + store.selectedHero().name }}</p>
     </div>
     <app-button-back></app-button-back>
   </div>
 
   <div class="hero-form-wrapper">
 
-    <img mat-card-image [src]="'assets' + hero().imageUrl" alt="{{ hero().name }}" width="400" height="600" />
+    <img mat-card-image [src]="'assets' + store.selectedHero().imageUrl" alt="{{ store.selectedHero().name }}" width="400" height="600" />
 
     <div class="hero-form-wrapper-form">
       <form [formGroup]="heroForm" class="hero-form-wrapper-form">
@@ -31,13 +31,20 @@
         </mat-form-field>
 
         <mat-form-field class="form-field">
-          <mat-label for="alignment">Alignment:</mat-label>
-          <input matInput id="alignment" type="text" formControlName="alignment">
+          <mat-label>Alignment</mat-label>
+          <mat-select formControlName="alignment">
+            <mat-option value="heroes">Heroes</mat-option>
+            <mat-option value="complicated">Its' complicated</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="form-field">
-          <mat-label for="team">Team:</mat-label>
-          <input matInput id="team" type="text" formControlName="team">
+          <mat-label>Team</mat-label>
+          <mat-select formControlName="team">
+            <mat-option value="justice">Justice League</mat-option>
+            <mat-option value="titans">Titans</mat-option>
+            <mat-option value="new">New team!</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="form-field">
