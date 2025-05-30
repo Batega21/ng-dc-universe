@@ -206,7 +206,7 @@ describe('HeroService', () => {
 
   it('should fail when hero by name is not found', () => {
     const heroName = mockHeroes[0].name;
-    const url = `${service['_heroesApi']}/superheroes/hero?name=${heroName}`;
+    const url = `${service['_heroesApi']}/superheroes/hero?name=${encodeURIComponent(heroName)}`;
     service.getHeroByName(heroName).subscribe({
       next: () => {
         fail('Expected an error, but got a hero by name');
