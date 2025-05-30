@@ -17,29 +17,21 @@ export class LocalStorageService {
   }
 
   public getItem<T>(key: string): T | null {
-    try {
-      const value = localStorage.getItem(key);
-      return value ? JSON.parse(value) : null;
-    } catch (error) {
-      console.error(`Error getting item from localStorage: ${key}`, error);
+    const value = localStorage.getItem(key);
+    if (!value) {
+      console.error(`Error getting item from localStorage: ${key}`);
       return null;
+    } else {
+      return JSON.parse(value);
     }
   }
 
   public removeItem(key: string): void {
-    try {
-      localStorage.removeItem(key);
-    } catch (error) {
-      console.error(`Error removing item from localStorage: ${key}`, error);
+    const value = localStorage.getItem(key);
+    if (!value) {
+      console.error(`Error removing item from localStorage: ${key} does not exist`);
+      return;
     }
-  }
-
-  public clear(): void {
-    try {
-      localStorage.clear();
-    } catch (error) {
-      console.error('Error clearing localStorage', error);
-    }
-  }
-  
+    localStorage.removeItem(key);
+  }  
 }

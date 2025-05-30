@@ -6,6 +6,7 @@ describe('LocalStorageService', () => {
   let service: LocalStorageService;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({});
     service = TestBed.inject(LocalStorageService);
   });
@@ -26,7 +27,6 @@ describe('LocalStorageService', () => {
   });
 
   it('should throw an error when setting an item in localStorage fails', () => {
-    localStorage.clear();
     const key = 'testKey';
     const value = { test: 'value' };
     spyOn(localStorage, 'setItem').and.throwError('Storage error');
@@ -46,13 +46,10 @@ describe('LocalStorageService', () => {
   });
 
   it('should return null if the item does not exist in localStorage', () => {
-    localStorage.clear();
     const key = 'testKey';
-    const retrievedValue = service.getItem(key);
+    const retrievedValue = service.getItem<{ test: string }>(key);
 
-    spyOn(service, 'getItem').and.throwError('Item not found');
-
-   expect(retrievedValue).toBeNull();
+    expect(retrievedValue).toBeNull();
   });
 
   it('should remove an Item from localStorage', () => {
@@ -66,6 +63,13 @@ describe('LocalStorageService', () => {
     expect(removedValue).toBeNull();
   });
 
+  it('should not throw an error when removing a non-existent item from localStorage', () => {
+    const key = 'nonExistentKey';
+    
+    expect(() => service.removeItem(key)).not.toThrow();
+    expect(localStorage.getItem(key)).toBeNull();
+  });
+
   it('should clear all items from localStorage', () => {
     const key1 = 'testKey1';
     const value1 = { test: 'value1' };
@@ -73,7 +77,9 @@ describe('LocalStorageService', () => {
     const value2 = { test: 'value2' };
     localStorage.setItem(key1, JSON.stringify(value1));
     localStorage.setItem(key2, JSON.stringify(value2));
-    service.clear();
+
+    localStorage.clear();
+
     const removedValue1 = localStorage.getItem(key1);
     const removedValue2 = localStorage.getItem(key2);
     expect(removedValue1).toBeNull();
