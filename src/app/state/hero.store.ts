@@ -26,7 +26,8 @@ type heroesState = {
   heroesCount: number;
   page: number;
   limit: number;
-  selectedHero: Hero;
+  selectedHero: Hero | null;
+  error: string | null;
 };
 
 const initialState: heroesState = {
@@ -36,7 +37,8 @@ const initialState: heroesState = {
   heroesCount: 0,
   page: Pagination.DEFAULT_PAGE,
   limit: Pagination.DEFAULT_LIMIT,
-  selectedHero: {} as Hero,
+  selectedHero: null,
+  error: null,
 };
 
 export const HeroesStore = signalStore(
@@ -59,6 +61,7 @@ export const HeroesStore = signalStore(
 
   withMethods(({ logger, heroesService, ...store }) => ({
     getHeroes(): void {
+      // TODO move to localStorageService
       const storageHeroes = JSON.parse(
         localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}'
       );
@@ -150,67 +153,42 @@ export const HeroesStore = signalStore(
     },
 
     getHeroesByNames(heroes: string[]): void {
-      logger.log('getHeroesByNames called with heroes:', heroes);
-      const storageHeroes = JSON.parse(
-        localStorage.getItem('heroes') || '{"heroes":[], "heroesCount":0}'
-      );
-      logger.log('Heroes loaded from local storage', storageHeroes);
+      logger.log('Fetching Heroes by names from API Service');
       patchState(store, { loading: true });
 
-      if (storageHeroes.heroes?.length > 0) {
-        const filteredHeroes = storageHeroes.heroes.filter((hero: Hero) =>
-          heroes.includes(hero.name)
-        );
-        logger.log('Filtered heroes:', filteredHeroes);
-        storageHeroes.heroesCount = storageHeroes.heroes.length;
-
-        if (filteredHeroes.length === heroes.length) {
-          logger.log('All heroes found in local storage');
+      heroesService.getHeroesByNames(heroes).subscribe({
+        next: (response: HeroesPaginated) => {
           patchState(store, {
-            heroes: filteredHeroes,
-            heroesCount: filteredHeroes.length,
+            heroes: response.data,
+            heroesCount: response.totalHeroes,
             loading: false,
             initialLoad: true,
             page: Pagination.DEFAULT_PAGE,
             limit: Pagination.DEFAULT_LIMIT,
           });
-        } else {
-          logger.log('No heroes found in local storage, fetching from API');
-          heroesService.getHeroesByNames(heroes).subscribe({
-            next: (response: HeroesPaginated) => {
-              patchState(store, {
-                heroes: response.data,
-                heroesCount: response.totalHeroes,
-                loading: false,
-                initialLoad: true,
-                page: Pagination.DEFAULT_PAGE,
-                limit: Pagination.DEFAULT_LIMIT,
-              });
-              localStorage.setItem(
-                'heroes',
-                JSON.stringify({
-                  heroes: response.data,
-                  heroesCount: response.totalHeroes,
-                })
-              );
-              logger.log(
-                'Heroes successfully fetched from API and saved to local storage.'
-              );
-            },
-            error: (err) => {
-              logger.error('Error fetching heroes from API', err);
-              patchState(store, {
-                heroes: [],
-                heroesCount: 0,
-                loading: false,
-                initialLoad: false,
-                page: Pagination.DEFAULT_PAGE,
-                limit: Pagination.DEFAULT_LIMIT,
-              });
-            },
+          localStorage.setItem(
+            'heroes',
+            JSON.stringify({
+              heroes: response.data,
+              heroesCount: response.totalHeroes,
+            })
+          );
+          logger.log(
+            'Heroes successfully fetched from API and saved to local storage.'
+          );
+        },
+        error: (err) => {
+          logger.error('Error fetching heroes from API', err);
+          patchState(store, {
+            heroes: [],
+            heroesCount: 0,
+            loading: false,
+            initialLoad: false,
+            page: Pagination.DEFAULT_PAGE,
+            limit: Pagination.DEFAULT_LIMIT,
           });
-        }
-      }
+        },
+      });
     },
 
     getHeroById(id: number): void {

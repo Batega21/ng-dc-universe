@@ -113,12 +113,14 @@ export class SearchBoxComponent {
   onGetAllHeroesListed(event: Event) {
     event.stopPropagation();
     event.preventDefault();
-    if (this.heroesQuery().length === 0) {
+
+    if (this.heroesQuery().length === 0 || this.heroesQuery().length === 1 && this.heroesQuery()[0] === '') {
       this._loggerService.error('No heroes selected', this.heroesQuery());
       this.openNotification('No heroes selected', SnackBarType.ERROR);
       this.onClearFilter();
       return;
     }
+
     this.store.getHeroesByNames(this.heroesQuery());
     this.onClearFilter();
   }

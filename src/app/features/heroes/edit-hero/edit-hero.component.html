@@ -2,15 +2,15 @@
 
   <div class="hero-form-header">
     <div>
-      <h2>{{ store.selectedHero().name }}</h2>
-      <p>{{ 'Fill this form to edit ' + store.selectedHero().name }}</p>
+      <h2>{{ hero().name }}</h2>
+      <p>{{ 'Fill this form to edit ' + hero().name }}</p>
     </div>
     <app-button-back></app-button-back>
   </div>
 
   <div class="hero-form-wrapper">
 
-    <img mat-card-image [src]="'assets' + store.selectedHero().imageUrl" alt="{{ store.selectedHero().name }}" width="400" height="600" />
+    <img mat-card-image [src]="'assets' + hero().imageUrl" alt="{{ hero().name }}" width="400" height="600" />
 
     <div class="hero-form-wrapper-form">
       <form [formGroup]="heroForm" class="hero-form-wrapper-form">
@@ -70,7 +70,7 @@
       <button mat-fab extended class="hero-form-button" color="primary" (click)="openDialog()"
         [disabled]="!heroForm.valid">
         <mat-icon>edit</mat-icon>
-        Save {{ store.selectedHero().name }}
+        Save {{ hero().name }}
       </button>
     </div>
   </div>

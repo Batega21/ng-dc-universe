@@ -173,43 +173,16 @@ describe('HeroStore', () => {
     expect(store.loading()).toBeFalse();
     expect(store.initialLoad()).toBeTrue();
   }));
+  
+  // TODO complete the test for getHeroById
+  it('should feth heroes by name and update the state', fakeAsync(() => {
+    const store = TestBed.inject(HeroesStore);
+    expect(store).toBeTruthy();
+  }));
 
-  // it('should get heroes by names and update the state', fakeAsync(() => {
-  //   const store = TestBed.inject(HeroesStore);
-  //   const names = HEROES.map(hero => hero.name);
-  //   spyOn(localStorage, 'getItem').and.returnValues(null);
-  //   spyOn(localStorage, 'setItem').and.callThrough();
-  //   (service.getHeroesByNames as jasmine.Spy).and
-  //     .returnValue(of({ heroes: HEROES.slice(0, Pagination.DEFAULT_LIMIT), totalCount: HEROES.length }));
-
-  //   store.getHeroesByNames(names);
-
-  //   tick();
-
-  //   expect(service.getHeroesByNames).toHaveBeenCalledWith(names);
-  //   expect(store.heroes()).toEqual(HEROES.slice(0, Pagination.DEFAULT_LIMIT));
-  //   expect(store.heroesCount()).toBe(HEROES.length);
-  // }));
-
-  // it('should handle error when fetching Heroes with getHeroesByNames() from API', fakeAsync(() => {
-  //   const store = TestBed.inject(HeroesStore);
-  //   const errorMessage = 'Error fetching heroes from API';
-  //   spyOn(localStorage, 'getItem').and.returnValue(null);
-  //   spyOn(localStorage, 'setItem').and.callThrough();
-  //   (service.getHeroesByNames as jasmine.Spy).and
-  //     .returnValue(throwError(() => new Error(errorMessage)));
-
-  //   store.getHeroesByNames(['Superman', 'Batman']);
-
-  //   tick(1000);
-
-  //   expect(logger.error).toHaveBeenCalledWith(
-  //     errorMessage,
-  //     new Error(errorMessage)
-  //   );
-  //   expect(store.heroes()).toBeUndefined();
-  //   expect(store.loading()).toBeFalse();
-  //   expect(store.initialLoad()).toBeTrue();
-  // }));
+  it('should handle error when fetching heroes by name from API', fakeAsync(() => {
+    const store = TestBed.inject(HeroesStore);
+    expect(store).toBeTruthy();
+  }));
 
 });

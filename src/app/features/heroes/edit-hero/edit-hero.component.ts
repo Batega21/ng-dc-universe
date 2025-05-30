@@ -65,7 +65,7 @@ export class EditHeroComponent {
   public error: string | null = null;
   readonly dialog = inject(MatDialog);
   public powers = Object.values(HeroPowers);
-  public attemptedFetch = false;
+  private attemptedFetch = false;
   private _snackBar = inject(MatSnackBar);
   private horizontalPosition: MatSnackBarHorizontalPosition =
     SnackBarPosition.CENTER;
@@ -73,6 +73,7 @@ export class EditHeroComponent {
   @Input()
   set id(heroId: number) {
     this.store.getHeroById(heroId);
+    this.attemptedFetch = true;
   }
   get id(): number {
     return this.hero().id;
@@ -108,9 +109,11 @@ export class EditHeroComponent {
   constructor() {
     effect(() => {
       const currentHero = this.store.selectedHero();
-      this.hero.set(this.store.selectedHero());
+      if (currentHero) {
+        this.hero.set(currentHero);
+      }
 
-      if (currentHero && (Object.keys(currentHero).length > 0 || currentHero.id)) {
+      if (currentHero && currentHero.id) {
         this.heroForm.patchValue({
           id: currentHero.id,
           name: currentHero.name,
@@ -125,6 +128,7 @@ export class EditHeroComponent {
           origin: currentHero.origin,
           firstAppearance: currentHero.firstAppearance,
         });
+        this.error = null;
       } else if (this.attemptedFetch) {
         this.error = 'Hero not found';
         this.router.navigate(['/hero']);

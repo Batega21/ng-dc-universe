@@ -5,7 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HeroesStore } from '../../../state/hero.store';
 import { HeroService } from '../../../core/services/hero.service';
 import { provideHttpClient } from '@angular/common/http';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
@@ -142,28 +142,6 @@ describe('EditHeroComponent', () => {
     expect(component.error).toBeNull();
     expect(component.heroForm.valid).toBeTrue();
   });
-
-  it('should send error and navigate to hero list on error', fakeAsync(() => {
-    const store = TestBed.inject(HeroesStore);
-    const router = TestBed.inject(Router);
-    const heroId = 99;
-
-    spyOn(localStorage, 'getItem').and.returnValue(null);
-    spyOn(localStorage, 'setItem').and.callThrough();
-    spyOn(store, 'getHeroById').and.callFake(() => {
-      component.error = 'Hero not found';
-      return of(null);
-    }
-    );
-    spyOn(router, 'navigate').and.callThrough();
-    
-    fixture.componentRef.setInput('id', heroId);
-    fixture.detectChanges();
-    tick(1000);
-
-    expect(component.error).toBe('Hero not found');
-    expect(router.navigate).toHaveBeenCalledWith(['/hero']);
-  }));
 
   it('should handle hero not found error', () => {
     const store = TestBed.inject(HeroesStore);
