@@ -12,7 +12,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DELETE_DIALOG_DATA } from '../../../core/constant/dialog.constant';
 import { Hero } from '../../../core/interfaces/hero';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
-import { HeroesProvider } from '../../../state/hero.store';
+import { HeroesStore } from '../../../state/hero.store';
 import { Pagination } from '../../../core/enums/pagination.enum';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.enum';
@@ -32,10 +32,10 @@ import { SnackBarPosition, SnackBarType } from '../../../core/enums/snack-bar.en
   ],
   templateUrl: './hero-list.component.html',
   styleUrls: ['./hero-list.component.scss'],
-  providers: [HeroesProvider],
+  providers: [HeroesStore],
 })
 export class HeroListComponent {
-  public readonly store = inject(HeroesProvider);
+  public readonly store = inject(HeroesStore);
   public readonly dialog = inject(MatDialog);
   public pageSize = signal(Pagination.DEFAULT_LIMIT);
   public currentPage = signal(Pagination.DEFAULT_PAGE);
@@ -55,6 +55,7 @@ export class HeroListComponent {
   }
 
   public onPageChange(event: PageEvent): void {
+    console.log("🚀 ~ HeroListComponent ~ onPageChange ~ event:", event)
     this.pageSize.update(() => event.pageSize);
     this.currentPage.update(() => event.pageIndex + 1);
 

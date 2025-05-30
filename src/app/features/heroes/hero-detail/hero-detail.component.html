@@ -1,24 +1,33 @@
+@if (store.loading()) {
+  <div class="heroes-wrapper">
+    <app-loader></app-loader>
+  </div>
+} @else {
 <mat-card class="hero-detail-card" appearance="outlined">
+
   <mat-card-header>
     <app-button-back></app-button-back>
-    <mat-card-title>{{ hero().name }}</mat-card-title>
-    <mat-card-subtitle>{{ hero().realName }}</mat-card-subtitle>
+    <mat-card-title>{{ store.selectedHero()?.name }}</mat-card-title>
+    <mat-card-subtitle>{{ store.selectedHero()?.realName }}</mat-card-subtitle>
   </mat-card-header>
-  <img mat-card-image [src]="'assets' + hero().imageUrl" alt="{{ hero().name }}" />
+
+  <img mat-card-image [src]="'assets' + store.selectedHero()?.imageUrl" alt="{{ store.selectedHero()?.name }}" />
+
   <mat-card-content>
     <mat-divider></mat-divider>
     <h2>Hero's information</h2>
     <mat-list role="list">
-      <mat-list-item role="listitem"><b>Alias:</b> {{ hero().alias | titlecase }}</mat-list-item>
-      <mat-list-item role="listitem"><b>Alignment:</b> {{ hero().alignment | titlecase }}</mat-list-item>
-      <mat-list-item role="listitem"><b>Team:</b> {{ hero().team | titlecase }}</mat-list-item>
-      <mat-list-item role="listitem"><b>Origin:</b> {{ hero().origin | titlecase }}</mat-list-item>
-      <mat-list-item role="listitem"><b>First Appearance:</b> {{ hero().firstAppearance | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>Alias:</b> {{ store.selectedHero()?.alias | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>Alignment:</b> {{ store.selectedHero()?.alignment | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>Team:</b> {{ store.selectedHero()?.team | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>Origin:</b> {{ store.selectedHero()?.origin | titlecase }}</mat-list-item>
+      <mat-list-item role="listitem"><b>First Appearance:</b>
+        {{ store.selectedHero()?.firstAppearance | titlecase }}</mat-list-item>
     </mat-list>
     <mat-divider></mat-divider>
     <h3>Power</h3>
     <mat-grid-list cols="2" rowHeight="50px">
-      @for (power of hero().powers; track power) {
+      @for (power of store.selectedHero()?.powers; track power) {
       <mat-grid-tile [colspan]="1" [rowspan]="1" [style.background]="'#141714'">
         {{ power | titlecase }}
       </mat-grid-tile>
@@ -26,4 +35,19 @@
     </mat-grid-list>
 
   </mat-card-content>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-actions class="hero-card-actions">
+    <button mat-fab extended color="warn" class="hero-card-actions-button" [routerLink]="['/hero/edit', store.selectedHero()?.id]"
+      routerLinkActive="router-link-active" [matTooltip]="'Edit ' + store.selectedHero()?.name">
+      <mat-icon>edit</mat-icon>
+      Edit {{ store.selectedHero()?.name }}
+    </button>
+    <button mat-fab extended color="warn" class="hero-card-actions-button" (click)="openDialog(store.selectedHero())" [matTooltip]="'Delete ' + store.selectedHero()?.name">
+      <mat-icon>delete</mat-icon>
+      Delete {{ store.selectedHero()?.name }}
+    </button>
+  </mat-card-actions>
 </mat-card>
+}

@@ -2,7 +2,7 @@
 
   <div class="hero-form-header">
     <div>
-      <h2>{{ store.selectedHero().name }}</h2>
+      <h2>{{ hero().name }}</h2>
       <p>{{ 'Fill this form to edit ' + hero().name }}</p>
     </div>
     <app-button-back></app-button-back>
@@ -31,13 +31,20 @@
         </mat-form-field>
 
         <mat-form-field class="form-field">
-          <mat-label for="alignment">Alignment:</mat-label>
-          <input matInput id="alignment" type="text" formControlName="alignment">
+          <mat-label>Alignment</mat-label>
+          <mat-select formControlName="alignment">
+            <mat-option value="heroes">Heroes</mat-option>
+            <mat-option value="complicated">Its' complicated</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="form-field">
-          <mat-label for="team">Team:</mat-label>
-          <input matInput id="team" type="text" formControlName="team">
+          <mat-label>Team</mat-label>
+          <mat-select formControlName="team">
+            <mat-option value="justice">Justice League</mat-option>
+            <mat-option value="titans">Titans</mat-option>
+            <mat-option value="new">New team!</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="form-field">
@@ -63,7 +70,7 @@
       <button mat-fab extended class="hero-form-button" color="primary" (click)="openDialog()"
         [disabled]="!heroForm.valid">
         <mat-icon>edit</mat-icon>
-        Edit {{ store.selectedHero().name }}
+        Save {{ hero().name }}
       </button>
     </div>
   </div>

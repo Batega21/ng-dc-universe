@@ -1,7 +1,7 @@
 <div class="container">
   <form [formGroup]="searchBoxForm" class="search-box">
 
-    <button matSuffix mat-icon-button class="search-box-button search" aria-label="Search"
+    <button matSuffix mat-icon-button class="search-box-button search" aria-label="Search" disabled="{{ !searchBoxForm.valid }}"
       (click)="onGetAllHeroesListed($event)">
       <mat-icon>search</mat-icon>
     </button>
@@ -9,7 +9,7 @@
     <input formControlName="searchBox" class="search-box-input" type="text" name="focus" placeholder="Search" (keyup)="onFilterChange($event)"
       id="search-input" value="" #filterInput />
 
-    @if ((searchValue() ?? '').length > 0) {
+    @if (searchValue().length > 0) {
     <button matSuffix mat-icon-button class="search-box-button clear" aria-label="Clear" (click)="onClearFilter()">
       <mat-icon>close</mat-icon>
     </button>

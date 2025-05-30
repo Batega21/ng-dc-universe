@@ -5,11 +5,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
-  imports: [MatToolbarModule, MatIconModule, RouterLink, RouterLinkActive],
+  imports: [MatToolbarModule, MatIconModule],
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent {
-  copyrightYear = new Date().getFullYear();
+  public copyrightYear = new Date().getFullYear();
 
 }

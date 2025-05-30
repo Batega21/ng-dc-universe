@@ -13,7 +13,8 @@ import {
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { DialogData } from '../../core/interfaces/dialog';
-import { HeroesProvider } from '../../state/hero.store';
+import { HeroesStore } from '../../state/hero.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog',
@@ -31,7 +32,8 @@ import { HeroesProvider } from '../../state/hero.store';
   styleUrls: ['./dialog.component.scss'],
 })
 export class HeroDialog {
-  readonly store = inject(HeroesProvider);
+  readonly store = inject(HeroesStore);
+  private readonly router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly dialogRef = inject(MatDialogRef<HeroDialog>);
   readonly data = inject<DialogData>(MAT_DIALOG_DATA);
@@ -52,8 +54,10 @@ export class HeroDialog {
     if (this.data.hero) {
       if (this.data.actionType === 'edit') {
         this.store.updateHero(this.data.hero);
+        this.router.navigate(['/hero', this.data.hero['id']]);
       } else if (this.data.actionType === 'add') {
         this.store.addHero(this.data.hero);
+        this.router.navigate(['/hero']);
       }
     }
     

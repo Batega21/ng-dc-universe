@@ -13,12 +13,13 @@ export class HeroService {
 
   constructor() {}
 
-  getHeroById(id: string): Observable<Hero> {
-    return this.http.get<Hero>(`${this._heroesApi}/superheroes/hero/${id}`);
+  // CRUD operations
+  addHero(hero: Hero): Observable<Hero> {
+    return this.http.post<Hero>(`${this._heroesApi}/superheroes`, hero);
   }
 
-  getHeroes(): Observable<Hero[]> {
-    return this.http.get<Hero[]>(`${this._heroesApi}/superheroes`);
+  getHeroById(id: number): Observable<Hero> {
+    return this.http.get<Hero>(`${this._heroesApi}/superheroes/${id}`);
   }
 
   getHeroesPaginated(
@@ -33,16 +34,22 @@ export class HeroService {
     });
   }
 
+  updateHero(hero: Hero): Observable<Hero> {
+    return this.http.put<Hero>(`${this._heroesApi}/superheroes/${hero.id}`, hero);
+  }
+
+  deleteHero(id: number): Observable<void> {
+    return this.http.delete<void>(`${this._heroesApi}/superheroes/${id}`);
+  }
+
+  // Fetch Data operations
+  getHeroes(): Observable<Hero[]> {
+    return this.http.get<Hero[]>(`${this._heroesApi}/superheroes`);
+  }
+
   getHeroesByQueryParams(queryName: string): Observable<Hero[]> {
     const params = new HttpParams().set('name', queryName);
     return this.http.get<Hero[]>(`${this._heroesApi}/superheroes/search`, {
-      params,
-    });
-  }
-
-  getHeroByName(name: string): Observable<Hero> {
-    const params = new HttpParams().set('name', encodeURIComponent(name));
-    return this.http.get<Hero>(`${this._heroesApi}/superheroes/hero`, {
       params,
     });
   }
@@ -60,4 +67,10 @@ export class HeroService {
     });
   }
 
+  getHeroByName(name: string): Observable<Hero> {
+    const params = new HttpParams().set('name', encodeURIComponent(name));
+    return this.http.get<Hero>(`${this._heroesApi}/superheroes/hero`, {
+      params,
+    });
+  }
 }

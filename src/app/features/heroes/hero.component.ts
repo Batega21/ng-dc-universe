@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { HeroListComponent } from './hero-list/hero-list.component';
 import { MatListModule } from '@angular/material/list';
 import { LoaderComponent } from '../../shared/loader/loader.component';
-import { HeroesProvider } from '../../state/hero.store';
+import { HeroesStore } from '../../state/hero.store';
 import { UpperCasePipe } from '@angular/common';
 
 @Component({
@@ -17,7 +17,7 @@ import { UpperCasePipe } from '@angular/common';
   styleUrls: ['./hero.component.scss'],
 })
 export class HeroComponent {
-  readonly store = inject(HeroesProvider);
+  readonly store = inject(HeroesStore);
   public title = signal('Heroes');
 
 }

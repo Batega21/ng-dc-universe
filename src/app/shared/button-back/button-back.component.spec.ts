@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ButtonBackComponent } from './button-back.component';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { HeroesStore } from '../../state/hero.store';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('ButtonBackComponent', () => {
   let component: ButtonBackComponent;
@@ -8,7 +12,18 @@ describe('ButtonBackComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ButtonBackComponent]
+      imports: [ButtonBackComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        HeroesStore,
+        { provide: ActivatedRoute, 
+          useValue: { 
+            params: { subscribe: () => {} }, 
+            snapshot: { paramMap: { get: () => null } } 
+          }
+        },
+      ],
     })
     .compileComponents();
 
