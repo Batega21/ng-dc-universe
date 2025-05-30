@@ -60,7 +60,11 @@ export class HeroDetailComponent {
     });
   }
   
-  public openDialog(hero: Hero) {
+  public openDialog(hero: Hero | null): void {
+    if (!hero) {
+      this.openNotification('Hero not found', SnackBarType.ERROR);
+      return;
+    }
     const dialogConfig = {
       data: {
         ...DELETE_DIALOG_DATA,
