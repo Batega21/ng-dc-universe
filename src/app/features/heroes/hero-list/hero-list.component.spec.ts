@@ -8,7 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarType } from '../../../core/enums/snack-bar.enum';
-import { HEROES } from '../../../core/constant/heroes.constant';
+import { HEROES_MOCK } from '../../../core/constant/heroes.constant';
 import { provideRouter } from '@angular/router';
 import { DELETE_DIALOG_DATA } from '../../../core/constant/dialog.constant';
 import { HeroDialog } from '../../../shared/dialog/dialog.component';
@@ -28,8 +28,8 @@ describe('HeroListComponent', () => {
         {
           provide: HeroesStore,
           useValue: {
-            getHeroes: () => HEROES,
-            deleteSelectedHero: (id: number) => HEROES.filter(hero => hero.id !== id),
+            getHeroes: () => HEROES_MOCK,
+            deleteSelectedHero: (id: number) => HEROES_MOCK.filter(hero => hero.id !== id),
           }
         },
         HeroService,
@@ -81,7 +81,7 @@ describe('HeroListComponent', () => {
   });
 
   it('should open a dialog when openDialog is called', () => {
-    const hero = HEROES[0];
+    const hero = HEROES_MOCK[0];
     const dialog = TestBed.inject(MatDialog);
     spyOn(dialog, 'open').and.callThrough();
 
@@ -99,7 +99,7 @@ describe('HeroListComponent', () => {
   });
 
   it('should delete a hero when deleteHero is called', () => {
-    const hero = HEROES[0];
+    const hero = HEROES_MOCK[0];
     spyOn(component['store'], 'deleteSelectedHero').and.callThrough();
 
     component.deleteHero(hero);
@@ -123,7 +123,7 @@ describe('HeroListComponent', () => {
   });
 
   it('should call deleteHero and openNotification after dialog is closed in openDialog', () => {
-    const hero = HEROES[0];
+    const hero = HEROES_MOCK[0];
     spyOn(component, 'deleteHero');
     spyOn(component, 'openNotification');
     component.openDialog(hero);

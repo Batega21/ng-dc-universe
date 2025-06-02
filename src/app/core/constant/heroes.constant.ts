@@ -1,6 +1,6 @@
 import { Hero } from '../interfaces/hero';
 
-export const HEROES: Hero[] = [
+export const HEROES_MOCK: Hero[] = [
   {
     id: 1,
     name: 'Superman',

@@ -11,6 +11,6 @@ export interface Hero {
   imageUrl: string;
 }
 export interface HeroesPaginated {
-  data: Hero[];
-  totalHeroes: number;
+  heroes: Hero[];
+  heroesCount: number;
 }

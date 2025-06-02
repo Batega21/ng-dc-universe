@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { LocalStorageService } from './local-storage.service';
+import { HEROES_MOCK } from '../constant/heroes.constant';
+import { Pagination } from '../enums/pagination.enum';
 
 describe('LocalStorageService', () => {
   let service: LocalStorageService;
@@ -16,38 +18,35 @@ describe('LocalStorageService', () => {
   });
 
   it('should set an item in localStorage', () => {
-    const key = 'testKey';
-    const value = { test: 'value' };
+    const key = 'heroes';
+    const value = { heroes: HEROES_MOCK, heroesCount: HEROES_MOCK.length };
     
-    service.setItem(key, value);
-    const storedValue = localStorage.getItem(key);
+    service.cacheHeroes(value);
+    const storedValue = service.getLocalHeroes(key);
     
     expect(storedValue).toBeTruthy();
-    expect(JSON.parse(storedValue!)).toEqual(value);
-  });
-
-  it('should throw an error when setting an item in localStorage fails', () => {
-    const key = 'testKey';
-    const value = { test: 'value' };
-    spyOn(localStorage, 'setItem').and.throwError('Storage error');
-
-    expect(() => service.setItem(key, value)).not.toThrow();
-    expect(localStorage.getItem(key)).toEqual(null);
+    expect(storedValue).toEqual(value);
   });
 
   it('should get an Item from localStorage', () => {
-    const key = 'testKey';
-    const value = { test: 'value' };
+    const key = 'heroes';
+    const startIndex = (Pagination.DEFAULT_PAGE - 1) * Pagination.DEFAULT_LIMIT;
+    const paginatedValue = HEROES_MOCK.slice(startIndex, startIndex + Pagination.DEFAULT_LIMIT);
+    const value = { heroes: paginatedValue, heroesCount: HEROES_MOCK.length };
 
     localStorage.setItem(key, JSON.stringify(value));
-    const retrievedValue = service.getItem<{ test: string }>(key);
+    const retrievedValue = service.getLocalHeroes(key);
+    const paginatedHeroes = retrievedValue?.heroes?.slice(startIndex, startIndex + Pagination.DEFAULT_LIMIT);
 
-    expect(retrievedValue).toEqual(value);
+    expect({
+      heroes: paginatedHeroes,
+      heroesCount: HEROES_MOCK.length
+    }).toEqual(value);
   });
 
   it('should return null if the item does not exist in localStorage', () => {
     const key = 'testKey';
-    const retrievedValue = service.getItem<{ test: string }>(key);
+    const retrievedValue = service.getLocalHeroes(key);
 
     expect(retrievedValue).toBeNull();
   });

@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarType } from '../../core/enums/snack-bar.enum';
 import { signal } from '@angular/core';
-import { HEROES } from '../../core/constant/heroes.constant';
+import { HEROES_MOCK } from '../../core/constant/heroes.constant';
 import { of, throwError } from 'rxjs';
 import { provideRouter, Router } from '@angular/router';
 
@@ -100,7 +100,7 @@ describe('SearchBoxComponent', () => {
 
 
   it('should update searchValue on filter change', () => {
-    const mockValue = HEROES[0].name;
+    const mockValue = HEROES_MOCK[0].name;
     const inputElement = fixture.nativeElement.querySelector('input');
     inputElement.value = mockValue;
 
@@ -114,7 +114,7 @@ describe('SearchBoxComponent', () => {
   });
 
   it('should update heroesQuery on filter change with valid input', () => {
-    const mockValue = HEROES[0].name;
+    const mockValue = HEROES_MOCK[0].name;
     const inputElement = fixture.nativeElement.querySelector('input');
     inputElement.value = mockValue;
 
@@ -123,7 +123,7 @@ describe('SearchBoxComponent', () => {
       value: inputElement,
     });
 
-    spyOn(component['_heroesService'], 'getHeroesByQueryParams').and.returnValue(of([HEROES[0]]));
+    spyOn(component['_heroesService'], 'getHeroesByQueryParams').and.returnValue(of([HEROES_MOCK[0]]));
 
     component.onFilterChange(event);
     expect(component.heroesQuery()).toContain(mockValue);
@@ -154,17 +154,17 @@ describe('SearchBoxComponent', () => {
   });
 
   it('should navigate to hero details on selected hero', () => {
-    const heroName = HEROES[0].name;
+    const heroName = HEROES_MOCK[0].name;
     const router = TestBed.inject(Router);
 
-    spyOn(component['_heroesService'], 'getHeroByName').and.returnValue(of(HEROES[0]));
+    spyOn(component['_heroesService'], 'getHeroByName').and.returnValue(of(HEROES_MOCK[0]));
     spyOn(router, 'navigate').and.callThrough();
     spyOn(component, 'onClearFilter').and.callThrough();
     spyOn(component['_loggerService'], 'log').and.callThrough();
     
     component.onSelectedHero(heroName);
     
-    expect(router.navigate).toHaveBeenCalledWith(['hero', HEROES[0].id]);
+    expect(router.navigate).toHaveBeenCalledWith(['hero', HEROES_MOCK[0].id]);
     expect(component.searchValue()).toBe('');
     expect(component.heroesQuery()).toEqual([]);
     expect(component.onClearFilter).toHaveBeenCalled();
@@ -203,7 +203,7 @@ describe('SearchBoxComponent', () => {
     spyOn(event, 'stopPropagation');
     spyOn(event, 'preventDefault');
     spyOn(component, 'onGetAllHeroesListed').and.callThrough();
-    spyOn(component['store'], 'getHeroesByNames').and.callFake(() => of(HEROES));
+    spyOn(component['store'], 'getHeroesByNames').and.callFake(() => of(HEROES_MOCK));
 
     component.heroesQuery.update(() => searchNames);
     component.onGetAllHeroesListed(event);
