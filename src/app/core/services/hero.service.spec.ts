@@ -4,13 +4,13 @@ import { HttpClientTestingModule, HttpTestingController, provideHttpClientTestin
 import { HeroService } from './hero.service';
 import { Pagination } from '../enums/pagination.enum';
 import { provideHttpClient } from '@angular/common/http';
-import { HEROES } from '../constant/heroes.constant';
+import { HEROES_MOCK } from '../constant/heroes.constant';
 
 describe('HeroService', () => {
   let service: HeroService;
   let httpMock: HttpTestingController;
   
-  const mockHeroes = HEROES;
+  const mockHeroes = HEROES_MOCK;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -43,7 +43,7 @@ describe('HeroService', () => {
 
   // CRUD operations
   it('should CREATE a hero with addHero method', () => {
-    const newHero = HEROES[0];
+    const newHero = HEROES_MOCK[0];
     service.addHero(newHero).subscribe((hero) => {
       expect(hero).toEqual(newHero);
     });
@@ -54,7 +54,7 @@ describe('HeroService', () => {
     req.flush(newHero);
   });
   it('should fail when CREATE a hero', () => {
-    const newHero = HEROES[0];
+    const newHero = HEROES_MOCK[0];
     service.addHero(newHero).subscribe({
       next: () => {
         fail('Expected an error, but got a hero instead');
@@ -133,8 +133,8 @@ describe('HeroService', () => {
     const page = Pagination.DEFAULT_PAGE;
     const limit = Pagination.DEFAULT_LIMIT;
     const responseData = {
-      data: mockHeroes,
-      totalHeroes: 2,
+      heroes: mockHeroes,
+      heroesCount: 2,
     };
     service.getHeroesPaginated(page, limit).subscribe((response) => {
       expect(response).toEqual(responseData);
@@ -230,8 +230,8 @@ describe('HeroService', () => {
     const url = `${service['_heroesApi']}/superheroes/by-names?name=${encodedNames}&page=${page}&limit=${limit}`;
 
     const responseData = {
-      data: mockHeroes,
-      totalHeroes: 2,
+      heroes: mockHeroes,
+      heroesCount: 2,
     };
     service.getHeroesByNames(names).subscribe((response) => {
       expect(response).toEqual(responseData);
@@ -297,7 +297,7 @@ describe('HeroService', () => {
   });
 
   it('should DELETE a hero with deleteHero() method', () => {
-    const heroId = HEROES[0].id;
+    const heroId = HEROES_MOCK[0].id;
     const url = `${service['_heroesApi']}/superheroes/${heroId}`;
     service.deleteHero(heroId).subscribe((response) => {
       expect(response).toBeNull();

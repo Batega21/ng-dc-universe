@@ -81,6 +81,6 @@ export class HeroListComponent {
   }
 
   public deleteHero(hero: Hero) {
-    this.store.deleteSelectedHero(hero.id);
+    this.store.deleteHero(hero.id);
   }
 }

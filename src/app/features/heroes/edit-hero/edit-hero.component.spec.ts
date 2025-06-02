@@ -10,7 +10,7 @@ import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackBarType } from '../../../core/enums/snack-bar.enum';
-import { HEROES } from '../../../core/constant/heroes.constant';
+import { HEROES_MOCK } from '../../../core/constant/heroes.constant';
 import { of } from 'rxjs';
 import { HeroPowers } from '../../../core/enums/powers.enum';
 
@@ -19,7 +19,7 @@ describe('EditHeroComponent', () => {
   let fixture: ComponentFixture<EditHeroComponent>;
   let service: HeroService;
 
-  const mockHeroes = HEROES;
+  const mockHeroes = HEROES_MOCK;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -51,8 +51,8 @@ describe('EditHeroComponent', () => {
         },
         { provide: ActivatedRoute, 
           useValue: { 
-            params: of({ id: HEROES[0].id }), 
-            snapshot: { paramMap: { get: () => HEROES[0].id } }
+            params: of({ id: HEROES_MOCK[0].id }), 
+            snapshot: { paramMap: { get: () => HEROES_MOCK[0].id } }
           }
         },
       ],
@@ -75,7 +75,7 @@ describe('EditHeroComponent', () => {
   });
 
   it('should get the id Input and set the heroId data', () => {
-    const heroId = HEROES[0].id;
+    const heroId = HEROES_MOCK[0].id;
     component.hero.set({ id: heroId} as any)
 
     fixture.componentRef.setInput('id', heroId);

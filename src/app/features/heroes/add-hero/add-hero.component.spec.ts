@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { provideHttpClient } from '@angular/common/http';
 import { SnackBarType } from '../../../core/enums/snack-bar.enum';
 import { FormGroup } from '@angular/forms';
-import { HEROES } from '../../../core/constant/heroes.constant';
+import { HEROES_MOCK } from '../../../core/constant/heroes.constant';
 import { Hero } from '../../../core/interfaces/hero';
 
 describe('AddHeroComponent', () => {
@@ -88,7 +88,7 @@ describe('AddHeroComponent', () => {
 
   it('should openDialog() and create a hero then closing', () => {
     const dialog = TestBed.inject(MatDialog);
-    const heroFormData = HEROES[0] || {} as Hero;
+    const heroFormData = HEROES_MOCK[0] || {} as Hero;
     spyOn(dialog, 'open').and.callThrough();
     spyOn(component, 'openNotification');
 

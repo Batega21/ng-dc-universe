@@ -77,7 +77,7 @@ export class HeroDetailComponent {
     const dialogRef = this.dialog.open(HeroDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.store.deleteSelectedHero(hero.id);
+      this.store.deleteHero(hero.id);
       this.openNotification(`${hero.name} deleted successfully`, SnackBarType.SUCCESS);
     });
   }

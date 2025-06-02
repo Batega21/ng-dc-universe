@@ -6,7 +6,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HeroService } from '../../../core/services/hero.service';
 import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { HEROES } from '../../../core/constant/heroes.constant';
+import { HEROES_MOCK } from '../../../core/constant/heroes.constant';
 import { of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,8 +28,8 @@ describe('HeroDetailComponent', () => {
         },
         { provide: ActivatedRoute, 
           useValue: { 
-            params: of({ id: HEROES[0].id }), 
-            snapshot: { paramMap: { get: () => HEROES[0].id } }
+            params: of({ id: HEROES_MOCK[0].id }), 
+            snapshot: { paramMap: { get: () => HEROES_MOCK[0].id } }
           }
         },
         HeroService,
@@ -53,7 +53,7 @@ describe('HeroDetailComponent', () => {
   it('should fetch a hero details when input id is set', () => {
     const store = TestBed.inject(HeroesStore);
     spyOn(store, 'getHeroById');
-    const heroId = HEROES[0].id;
+    const heroId = HEROES_MOCK[0].id;
 
     component.id = heroId;
 
@@ -80,18 +80,18 @@ describe('HeroDetailComponent', () => {
   it('should open dialog and delete after closing', () => {
     const store = TestBed.inject(HeroesStore);
     const dialog = TestBed.inject(MatDialog);
-    const hero = HEROES[0];
+    const hero = HEROES_MOCK[0];
 
     spyOn(dialog, 'open').and.returnValue({
       afterClosed: () => of(true)
     } as any);
-    spyOn(store, 'deleteSelectedHero');
+    spyOn(store, 'deleteHero');
     spyOn(component, 'openNotification');
 
     component.openDialog(hero);
 
     expect(dialog.open).toHaveBeenCalled();
-    expect(store.deleteSelectedHero).toHaveBeenCalledWith(hero.id);
+    expect(store.deleteHero).toHaveBeenCalledWith(hero.id);
     expect(component.openNotification).toHaveBeenCalledWith(
       `${hero.name} deleted successfully`,
       SnackBarType.SUCCESS
