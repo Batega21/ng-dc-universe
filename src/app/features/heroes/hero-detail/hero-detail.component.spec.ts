@@ -85,13 +85,13 @@ describe('HeroDetailComponent', () => {
     spyOn(dialog, 'open').and.returnValue({
       afterClosed: () => of(true)
     } as any);
-    spyOn(store, 'deleteSelectedHero');
+    spyOn(store, 'deleteHero');
     spyOn(component, 'openNotification');
 
     component.openDialog(hero);
 
     expect(dialog.open).toHaveBeenCalled();
-    expect(store.deleteSelectedHero).toHaveBeenCalledWith(hero.id);
+    expect(store.deleteHero).toHaveBeenCalledWith(hero.id);
     expect(component.openNotification).toHaveBeenCalledWith(
       `${hero.name} deleted successfully`,
       SnackBarType.SUCCESS

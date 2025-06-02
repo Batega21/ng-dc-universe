@@ -29,7 +29,7 @@ describe('HeroListComponent', () => {
           provide: HeroesStore,
           useValue: {
             getHeroes: () => HEROES_MOCK,
-            deleteSelectedHero: (id: number) => HEROES_MOCK.filter(hero => hero.id !== id),
+            deleteHero: (id: number) => HEROES_MOCK.filter(hero => hero.id !== id),
           }
         },
         HeroService,
@@ -100,11 +100,11 @@ describe('HeroListComponent', () => {
 
   it('should delete a hero when deleteHero is called', () => {
     const hero = HEROES_MOCK[0];
-    spyOn(component['store'], 'deleteSelectedHero').and.callThrough();
+    spyOn(component['store'], 'deleteHero').and.callThrough();
 
     component.deleteHero(hero);
 
-    expect(component['store'].deleteSelectedHero).toHaveBeenCalledWith(hero.id);
+    expect(component['store'].deleteHero).toHaveBeenCalledWith(hero.id);
   });
 
   it('should update pageSize and currentPage and call getHeroesPaginated on onPageChange', () => {

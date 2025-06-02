@@ -21,7 +21,7 @@ describe('LocalStorageService', () => {
     const key = 'heroes';
     const value = { heroes: HEROES_MOCK, heroesCount: HEROES_MOCK.length };
     
-    service.cacheHeroes(value);
+    service.setHeroesInStorage(value);
     const storedValue = service.getLocalHeroes(key);
     
     expect(storedValue).toBeTruthy();
@@ -51,21 +51,27 @@ describe('LocalStorageService', () => {
     expect(retrievedValue).toBeNull();
   });
 
-  it('should remove an Item from localStorage', () => {
-    const key = 'testKey';
-    const value = { test: 'value' };
+  it('should remove a Hero from the local storage', () => {
+    const heroId = 1;
+    const key = 'heroes';
+    const value = { heroes: HEROES_MOCK, heroesCount: HEROES_MOCK.length };
 
-    localStorage.setItem(key, JSON.stringify(value));
-    service.removeItem(key);
-    const removedValue = localStorage.getItem(key);
-    
-    expect(removedValue).toBeNull();
+    service.setHeroesInStorage(value);
+    service.removeHeroesFromStorage(heroId);
+
+    const updatedHeroes = service.getLocalHeroes(key);
+    const expectedHeroes = HEROES_MOCK.filter(hero => hero.id !== heroId);
+    expect(updatedHeroes).toBeTruthy();
+    expect(updatedHeroes?.heroes).toEqual(expectedHeroes);
+    expect(updatedHeroes?.heroesCount).toBe(expectedHeroes.length);
+    expect(localStorage.getItem(key)).toBe(JSON.stringify(updatedHeroes));
   });
 
   it('should not throw an error when removing a non-existent item from localStorage', () => {
+    const heroId = 1;
     const key = 'nonExistentKey';
     
-    expect(() => service.removeItem(key)).not.toThrow();
+    expect(() => service.removeHeroesFromStorage(heroId)).not.toThrow();
     expect(localStorage.getItem(key)).toBeNull();
   });
 
