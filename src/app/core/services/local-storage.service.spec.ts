@@ -28,20 +28,16 @@ describe('LocalStorageService', () => {
     expect(storedValue).toEqual(value);
   });
 
-  it('should get an Item from localStorage', () => {
+  it('should get an Heroes from localStorage', () => {
     const key = 'heroes';
-    const startIndex = (Pagination.DEFAULT_PAGE - 1) * Pagination.DEFAULT_LIMIT;
-    const paginatedValue = HEROES_MOCK.slice(startIndex, startIndex + Pagination.DEFAULT_LIMIT);
-    const value = { heroes: paginatedValue, heroesCount: HEROES_MOCK.length };
+    const heroes = HEROES_MOCK;
+    const value = { heroes: heroes, heroesCount: HEROES_MOCK.length };
 
     localStorage.setItem(key, JSON.stringify(value));
-    const retrievedValue = service.getLocalHeroes(key);
-    const paginatedHeroes = retrievedValue?.heroes?.slice(startIndex, startIndex + Pagination.DEFAULT_LIMIT);
-
-    expect({
-      heroes: paginatedHeroes,
-      heroesCount: HEROES_MOCK.length
-    }).toEqual(value);
+    const paginatedHeroes = service.getHeroesFromStorage(Pagination.DEFAULT_PAGE, Pagination.DEFAULT_LIMIT);
+    
+    expect(paginatedHeroes).toBeTruthy();
+    expect(paginatedHeroes?.heroes).toEqual(heroes.slice(0, Pagination.DEFAULT_LIMIT));
   });
 
   it('should return null if the item does not exist in localStorage', () => {
@@ -91,4 +87,59 @@ describe('LocalStorageService', () => {
     expect(removedValue2).toBeNull();
     expect(localStorage.length).toBe(0);
   });
+
+
+  it('should add a new hero to storage when heroes already exist', () => {
+    const initial = { heroes: [...HEROES_MOCK], heroesCount: HEROES_MOCK.length };
+    service.setHeroesInStorage(initial);
+    const newHero = { id: 999, name: 'Extra Hero' };
+    service.addHeroToStorage(newHero as any);
+    const stored = service.getLocalHeroes('heroes');
+    expect(stored?.heroes.length).toBe(initial.heroesCount + 1);
+    expect(stored?.heroes.some(h => h.id === newHero.id)).toBeTrue();
+    expect(stored?.heroesCount).toBe(initial.heroesCount + 1);
+  });
+
+  it('should not add a hero if hero with same id already exists', () => {
+    const hero = HEROES_MOCK[0];
+    const initial = { heroes: [...HEROES_MOCK], heroesCount: HEROES_MOCK.length };
+    service.setHeroesInStorage(initial);
+    spyOn(console, 'warn');
+    service.addHeroToStorage(hero as any);
+    const stored = service.getLocalHeroes('heroes');
+    expect(stored?.heroes.length).toBe(initial.heroesCount);
+    expect(console.warn).toHaveBeenCalledWith(`Hero with id ${hero.id} already exists in local storage.`);
+  });
+
+  it('should return null from getHeroesFromStorage if no heroes in storage', () => {
+    localStorage.clear();
+    const result = service.getHeroesFromStorage(1, 10);
+    expect(result).toBeNull();
+  });
+
+  it('should return paginated heroes from getHeroesFromStorage', () => {
+    const value = { heroes: HEROES_MOCK, heroesCount: HEROES_MOCK.length };
+    service.setHeroesInStorage(value);
+    const page = 2;
+    const pageSize = 2;
+    const expected = HEROES_MOCK.slice((page - 1) * pageSize, page * pageSize);
+    const result = service.getHeroesFromStorage(page, pageSize);
+    expect(result).toBeTruthy();
+    expect(result?.heroes).toEqual(expected);
+    expect(result?.heroesCount).toBe(HEROES_MOCK.length);
+  });
+
+  it('should log error and return null if getLocalHeroes is called with missing key', () => {
+    spyOn(console, 'error');
+    const result = service.getLocalHeroes('missingKey');
+    expect(result).toBeNull();
+    expect(console.error).toHaveBeenCalledWith('Error getting item from localStorage: missingKey');
+  });
+
+  it('should log warning if removeHeroesFromStorage is called when no heroes exist', () => {
+    spyOn(console, 'warn');
+    service.removeHeroesFromStorage(123);
+    expect(console.warn).toHaveBeenCalledWith('No heroes found in local storage to remove with id: 123');
+  });
+
 });

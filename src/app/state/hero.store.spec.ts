@@ -100,7 +100,6 @@ describe('HeroStore', () => {
     const store = TestBed.inject(HeroesStore);
     const pageIndex = Pagination.DEFAULT_PAGE;
     const pageSize = Pagination.DEFAULT_LIMIT;
-    (localStorageService.getHeroesFromStorage as jasmine.Spy).and.returnValue(null);
     (service.getHeroesPaginated as jasmine.Spy).and
       .returnValue(of({ heroes: HEROES_MOCK, heroesCount: HEROES_MOCK.length }));
 

@@ -66,23 +66,8 @@ export const HeroesStore = signalStore(
 
       logger.log(`Fetching paginated Heroes page: ${page}, limit: ${limit}`);
       patchState(store, { loading: true, error: null });
-
-      const storageHeroes = localStorageService.getHeroesFromStorage(page, limit);
-
-      if (storageHeroes !== null && storageHeroes.heroesCount > 0) {
-        patchState(store, {
-          heroes: storageHeroes.heroes,
-          heroesCount: storageHeroes.heroesCount,
-          loading: false,
-          initialLoad: true,
-          page: page,
-          limit: limit,
-          error: null,
-        });
-        logger.log('Heroes loaded from local storage');
-        return;
-      }
       
+      // TODO: Append Heroes each pagination request
       heroesService
         .getHeroesPaginated(page, limit)
         .pipe(delay(1000))
