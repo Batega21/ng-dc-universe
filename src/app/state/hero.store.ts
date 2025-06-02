@@ -67,7 +67,6 @@ export const HeroesStore = signalStore(
       logger.log(`Fetching paginated Heroes page: ${page}, limit: ${limit}`);
       patchState(store, { loading: true, error: null });
       
-      // TODO: Append Heroes each pagination request
       heroesService
         .getHeroesPaginated(page, limit)
         .pipe(delay(1000))
