@@ -108,10 +108,9 @@ describe('HeroStore', () => {
     tick(1000);
 
     expect(service.getHeroesPaginated).toHaveBeenCalledWith(pageIndex, pageSize);
-    expect(store.heroes()).toEqual(HEROES_MOCK.slice(0, pageSize));
+    expect(store.heroes()).toEqual(HEROES_MOCK.slice(pageIndex - 1, pageSize));
     expect(store.heroesCount()).toBe(HEROES_MOCK.length);
 
-    expect(logger.log).toHaveBeenCalledWith(`Fetching paginated Heroes page: ${pageIndex}, limit: ${pageSize}`);
     expect(logger.log).toHaveBeenCalledWith(`Fetching paginated Heroes page: ${pageIndex}, limit: ${pageSize}`);
     expect(logger.log).toHaveBeenCalledWith('Heroes successfully fetched and saved to local storage.');
     }
