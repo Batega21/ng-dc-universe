@@ -65,7 +65,7 @@ export class EditHeroComponent {
   public error: string | null = null;
   readonly dialog = inject(MatDialog);
   public powers = Object.values(HeroPowers);
-  private attemptedFetch = false;
+  public attemptedFetch = false;
   private _snackBar = inject(MatSnackBar);
   private horizontalPosition: MatSnackBarHorizontalPosition =
     SnackBarPosition.CENTER;

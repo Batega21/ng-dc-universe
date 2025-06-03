@@ -5,7 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HeroesStore } from '../../../state/hero.store';
 import { HeroService } from '../../../core/services/hero.service';
 import { provideHttpClient } from '@angular/common/http';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,11 +13,15 @@ import { SnackBarType } from '../../../core/enums/snack-bar.enum';
 import { HEROES_MOCK } from '../../../core/constant/heroes.constant';
 import { of } from 'rxjs';
 import { HeroPowers } from '../../../core/enums/powers.enum';
+import { Component } from '@angular/core';
+
+
+@Component({ template: '' })
+class DummyComponent {}
 
 describe('EditHeroComponent', () => {
   let component: EditHeroComponent;
   let fixture: ComponentFixture<EditHeroComponent>;
-  let service: HeroService;
 
   const mockHeroes = HEROES_MOCK;
 
@@ -25,7 +29,9 @@ describe('EditHeroComponent', () => {
     await TestBed.configureTestingModule({
       imports: [EditHeroComponent],
       providers: [
-        provideRouter([]),
+        provideRouter([
+          { path: 'hero', component: DummyComponent },
+        ]),
         provideHttpClient(),
         provideHttpClientTesting(),
         HeroesStore,
@@ -61,7 +67,6 @@ describe('EditHeroComponent', () => {
 
     fixture = TestBed.createComponent(EditHeroComponent);
     component = fixture.componentInstance;
-    service = TestBed.inject(HeroService);
     fixture.detectChanges();
   });
 
@@ -85,6 +90,37 @@ describe('EditHeroComponent', () => {
     expect(component.id).toBe(heroId);
     expect(component.hero().id).toBe(heroId);
   });
+
+  it('should set hero data when hero is fetched', () => {
+    const heroId = HEROES_MOCK[0].id;
+    const store = TestBed.inject(HeroesStore);
+
+    fixture.componentRef.setInput('id', heroId);
+    fixture.detectChanges();
+    spyOn(store, 'getHeroById').and.callThrough();
+    store.getHeroById(heroId);
+
+    expect(store.getHeroById).toHaveBeenCalledWith(heroId);
+    expect(component.hero().id).toBe(heroId);
+    expect(component.heroForm.value.id).toBe(heroId);
+    expect(component.heroForm.valid).toBeTrue();
+  });
+
+  it('should navigate to hero list if attemptedFetch is false', fakeAsync(() => {
+    const heroId = 999;
+    const store = TestBed.inject(HeroesStore);
+    spyOn(store, 'getHeroById').and.callThrough();
+    spyOn(store, 'selectedHero').and.returnValue(null);
+    spyOn(component['router'], 'navigate').and.callThrough();
+
+    fixture.componentRef.setInput('id', heroId);
+    fixture.detectChanges();
+    component.attemptedFetch = false;
+
+    tick();
+
+    expect(component['router'].navigate).toHaveBeenCalledWith(['/hero']);
+  }));
 
   it('should call openNotification with correct parameters', () => {
     const _snackBar = TestBed.inject(MatSnackBar);

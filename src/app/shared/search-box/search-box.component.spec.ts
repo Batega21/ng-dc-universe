@@ -129,7 +129,6 @@ describe('SearchBoxComponent', () => {
     expect(component.heroesQuery()).toContain(mockValue);
   });
 
-  // NOT COVERED
   it('should handle error when fetching heroes', () => {
     const message = 'Hero with these parameters not found';
     const error = new Error(message);

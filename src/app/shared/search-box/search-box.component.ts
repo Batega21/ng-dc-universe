@@ -41,7 +41,6 @@ export class SearchBoxComponent {
       Validators.pattern(/^[a-zA-Z0-9\s]+$/),
     ]),
   });
-  // TODO disabled searchBoxForm until heroesQuery is empty
   private _snackBar = inject(MatSnackBar);
   private horizontalPosition: MatSnackBarHorizontalPosition = SnackBarPosition.CENTER;
   private verticalPosition: MatSnackBarVerticalPosition = SnackBarPosition.TOP;
@@ -109,7 +108,6 @@ export class SearchBoxComponent {
     });
   }
 
-  // TODO: remove event parameter if not needed
   onGetAllHeroesListed(event: Event) {
     event.stopPropagation();
     event.preventDefault();
