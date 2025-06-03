@@ -117,6 +117,7 @@ describe('SearchBoxComponent', () => {
     const mockValue = HEROES_MOCK[0].name;
     const inputElement = fixture.nativeElement.querySelector('input');
     inputElement.value = mockValue;
+    const existingHeroes = ['Batman', 'Superman'].filter(name => name.includes(mockValue));
 
     const event = new Event('input');
     Object.defineProperty(event, 'target', {
@@ -126,10 +127,11 @@ describe('SearchBoxComponent', () => {
     spyOn(component['_heroesService'], 'getHeroesByQueryParams').and.returnValue(of([HEROES_MOCK[0]]));
 
     component.onFilterChange(event);
+    expect(existingHeroes.length).toBeGreaterThan(0);
     expect(component.heroesQuery()).toContain(mockValue);
+    expect(component.heroesQuery()).toEqual(existingHeroes);
   });
 
-  // NOT COVERED
   it('should handle error when fetching heroes', () => {
     const message = 'Hero with these parameters not found';
     const error = new Error(message);
@@ -171,7 +173,7 @@ describe('SearchBoxComponent', () => {
     expect(component['_loggerService'].log).toHaveBeenCalledWith('Successfully fetch selectedHero:', heroName);
   });
 
-  it('shoudl handle error on selected hero calls', () => {
+  it('should handle error on selected hero calls', () => {
     const heroName = 'NonExistingHero';
     const error = new Error('Error fetching hero by name');
 

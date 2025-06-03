@@ -98,4 +98,17 @@ describe('HeroDetailComponent', () => {
     );
   });
 
+  it('should openNotification if hero param is null', () => {
+    const dialog = TestBed.inject(MatDialog);
+    const hero = null;
+
+    spyOn(dialog, 'open');
+    spyOn(component, 'openNotification');
+
+    component.openDialog(hero);
+
+    expect(dialog.open).not.toHaveBeenCalled();
+    expect(component.openNotification).toHaveBeenCalledWith('Hero not found', SnackBarType.ERROR);
+  });
+
 });

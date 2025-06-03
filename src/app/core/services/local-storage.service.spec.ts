@@ -111,6 +111,17 @@ describe('LocalStorageService', () => {
     expect(console.warn).toHaveBeenCalledWith(`Hero with id ${hero.id} already exists in local storage.`);
   });
 
+  it('should add a new hero to storage when no heroes exist', () => {
+    const newHero = HEROES_MOCK[0];
+    service.addHeroToStorage(newHero);
+    service.setHeroesInStorage({ heroes: [newHero], heroesCount: 1 });
+    const stored = service.getLocalHeroes('heroes');
+    expect(stored).toBeTruthy();
+    expect(stored?.heroes.length).toBe(1);
+    expect(stored?.heroes[0].id).toBe(newHero.id);
+    expect(stored?.heroesCount).toBe(1);
+  });
+
   it('should return null from getHeroesFromStorage if no heroes in storage', () => {
     localStorage.clear();
     const result = service.getHeroesFromStorage(1, 10);
