@@ -109,17 +109,19 @@ describe('EditHeroComponent', () => {
   it('should navigate to hero list if attemptedFetch is false', fakeAsync(() => {
     const heroId = 999;
     const store = TestBed.inject(HeroesStore);
+    const router = TestBed.inject(Router);
     spyOn(store, 'getHeroById').and.callThrough();
     spyOn(store, 'selectedHero').and.returnValue(null);
-    spyOn(component['router'], 'navigate').and.callThrough();
+    spyOn(router, 'navigate');
 
     fixture.componentRef.setInput('id', heroId);
     fixture.detectChanges();
-    component.attemptedFetch = false;
 
     tick();
 
-    expect(component['router'].navigate).toHaveBeenCalledWith(['/hero']);
+    expect(router.navigate).toHaveBeenCalledWith(['/hero']);
+    expect(store.getHeroById).toHaveBeenCalledWith(heroId);
+    expect(component.error).toBe('Hero not found');
   }));
 
   it('should call openNotification with correct parameters', () => {
