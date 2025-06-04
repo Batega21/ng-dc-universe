@@ -47,6 +47,6 @@ describe('HeaderComponent', () => {
   });
 
   it('should have a title', () => {
-    expect(component.title).toBe('Heroes');
+    expect(component.title()).toBe('Heroes');
   });
 });

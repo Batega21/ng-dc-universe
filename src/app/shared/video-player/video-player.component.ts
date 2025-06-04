@@ -1,11 +1,11 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-video-player',
   imports: [],
   template: ` <div class="video-wrapper">
-    @if (videoId) {
+    @if (videoId()) {
     <iframe
       width="560"
       height="315"
@@ -25,7 +25,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 export class VideoPlayerComponent {
   private readonly sanitizer = inject(DomSanitizer)
   public videoURL: SafeResourceUrl;
-  @Input() videoId: string = 'Z9eD6ujmK0Y';
+  readonly videoId = input<string>('Z9eD6ujmK0Y');
   
   constructor() {
     const autoplay = 1;
@@ -38,7 +38,7 @@ export class VideoPlayerComponent {
     const rel = 0;
     const disablekb = 1;
 
-    const url = `https://www.youtube.com/embed/${this.videoId}?autoplay=${autoplay}&mute=${mute}&playlist=${this.videoId}&loop=${loop}&controls=${controls}&showinfo=${showInfo}&modestbranding=${modestBranding}&iv_load_policy=${iv_loadPolicy}&rel=${rel}&disablekb=${disablekb}`;
+    const url = `https://www.youtube.com/embed/${this.videoId()}?autoplay=${autoplay}&mute=${mute}&playlist=${this.videoId()}&loop=${loop}&controls=${controls}&showinfo=${showInfo}&modestbranding=${modestBranding}&iv_load_policy=${iv_loadPolicy}&rel=${rel}&disablekb=${disablekb}`;
     this.videoURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }
