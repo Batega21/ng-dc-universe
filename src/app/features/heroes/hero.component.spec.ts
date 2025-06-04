@@ -32,9 +32,9 @@ describe('HeroComponent', () => {
     expect(component).toBeTruthy();
   });
   
-  it('should initialize the signal "title" with "Heroes"', () => {
+  it('should initialize the signal "title" with "DC Heroes"', () => {
     expect(component.title).toBeDefined();
-    expect(component.title()).toBe('Heroes');
+    expect(component.title()).toBe('DC Heroes');
   });
 
   it('should have a store', () => {

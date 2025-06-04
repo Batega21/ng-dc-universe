@@ -16,10 +16,10 @@
 
 h1 {
   position: absolute;
-  top: 50%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 4rem;
+  font-size: 3rem;
   color: #fff;
   text-align: center;
   letter-spacing: 5rem;
@@ -49,6 +49,6 @@ h1 {
   }
   100% {
     opacity: 0;
-    letter-spacing: 8rem;
+    letter-spacing: 5rem;
   }
 }

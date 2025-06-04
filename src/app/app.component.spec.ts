@@ -26,8 +26,6 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
 
-  // https://angular.dev/guide/testing/components-scenarios#example-55
-
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;

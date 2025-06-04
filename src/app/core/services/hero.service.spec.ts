@@ -41,7 +41,6 @@ describe('HeroService', () => {
     expect(service['_heroesApi']).toBe('http://localhost:3000');
   });
 
-  // CRUD operations
   it('should CREATE a hero with addHero method', () => {
     const newHero = HEROES_MOCK[0];
     service.addHero(newHero).subscribe((hero) => {

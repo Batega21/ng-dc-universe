@@ -16,10 +16,6 @@ import { delay } from 'rxjs';
 import { Pagination } from '../core/enums/pagination.enum';
 import { LocalStorageService } from '../core/services/local-storage.service';
 
-// Sources:
-// https://ngrx.io/guide/signals/signal-store
-// https://www.telerik.com/blogs/state-management-angular-applications-using-ngrx-signals-store
-
 type heroesState = {
   heroes: Hero[];
   loading: boolean;

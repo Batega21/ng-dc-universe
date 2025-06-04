@@ -13,7 +13,6 @@ export class HeroService {
 
   constructor() {}
 
-  // CRUD operations
   addHero(hero: Hero): Observable<Hero> {
     return this.http.post<Hero>(`${this._heroesApi}/superheroes`, hero);
   }
@@ -42,7 +41,6 @@ export class HeroService {
     return this.http.delete<void>(`${this._heroesApi}/superheroes/${id}`);
   }
 
-  // Fetch Data operations
   getHeroes(): Observable<Hero[]> {
     return this.http.get<Hero[]>(`${this._heroesApi}/superheroes`);
   }

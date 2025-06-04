@@ -30,8 +30,12 @@
 }
 .heroes-paginator {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   max-width: 1024px;
   margin: 0 auto;
   padding: 1rem;
+
+  .mat-mdc-paginator {
+    background-color: transparent;
+  }
 }
