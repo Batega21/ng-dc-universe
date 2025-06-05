@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, model, Output } from '@angular/core';
+import { Component, inject, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -43,7 +43,7 @@ export class HeroDialog {
   public cancelButtonText = model(this.data.cancelButtonText);
   public confirmButtonIcon = model(this.data.confirmButtonIcon);
   public cancelButtonIcon = model(this.data.cancelButtonIcon);
-  @Output() public confirmed: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public readonly confirmed = output<boolean>();
 
   onNoClick(): void {
     this.dialogRef.close();

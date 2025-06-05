@@ -144,13 +144,11 @@ describe('SearchBoxComponent', () => {
     
     spyOn(component['_heroesService'], 'getHeroesByQueryParams').and.returnValue(throwError(() => error));
     spyOn(component, 'openNotification').and.callFake(() => {});
-    spyOn(component['_loggerService'], 'error');
     
     component.onFilterChange(event);
     component.openNotification(message, SnackBarType.ERROR);
 
     expect(component.openNotification).toHaveBeenCalledWith(message, SnackBarType.ERROR);
-    expect(component['_loggerService'].error).toHaveBeenCalledWith(message, error);
     expect(component.searchValue()).toBe('non-existing-hero');
     expect(component.heroesQuery()).toEqual([]);
   });
@@ -162,7 +160,6 @@ describe('SearchBoxComponent', () => {
     spyOn(component['_heroesService'], 'getHeroByName').and.returnValue(of(HEROES_MOCK[0]));
     spyOn(router, 'navigate').and.callThrough();
     spyOn(component, 'onClearFilter').and.callThrough();
-    spyOn(component['_loggerService'], 'log').and.callThrough();
     
     component.onSelectedHero(heroName);
     
@@ -170,7 +167,6 @@ describe('SearchBoxComponent', () => {
     expect(component.searchValue()).toBe('');
     expect(component.heroesQuery()).toEqual([]);
     expect(component.onClearFilter).toHaveBeenCalled();
-    expect(component['_loggerService'].log).toHaveBeenCalledWith('Successfully fetch selectedHero:', heroName);
   });
 
   it('should handle error on selected hero calls', () => {
@@ -180,13 +176,11 @@ describe('SearchBoxComponent', () => {
     spyOn(component['_heroesService'], 'getHeroByName').and.returnValue(throwError(() => error));
     spyOn(component, 'openNotification').and.callFake(() => {});
     spyOn(component, 'onClearFilter');
-    spyOn(component['_loggerService'], 'error');
 
     component.onSelectedHero(heroName);
 
     expect(component.openNotification).toHaveBeenCalledWith('Error fetching hero by name', SnackBarType.ERROR);
     expect(component.onClearFilter).toHaveBeenCalled();
-    expect(component['_loggerService'].error).toHaveBeenCalledWith('Error fetching hero by name', error);
     expect(component.searchValue()).toBe('');
     expect(component.heroesQuery()).toEqual([]);
   });

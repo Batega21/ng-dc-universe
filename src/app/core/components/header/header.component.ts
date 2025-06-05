@@ -1,5 +1,5 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -25,6 +25,6 @@ import { SearchBoxComponent } from '../../../shared/search-box/search-box.compon
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  public title = 'Heroes';
+  readonly title = input('Heroes');
 
 }

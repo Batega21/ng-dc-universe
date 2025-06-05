@@ -91,7 +91,7 @@ describe('EditHeroComponent', () => {
     expect(component.hero().id).toBe(heroId);
   });
 
-  it('should set hero data when hero is fetched', () => {
+  it('should set hero data when hero is fetched', fakeAsync(() => {
     const heroId = HEROES_MOCK[0].id;
     const store = TestBed.inject(HeroesStore);
 
@@ -100,11 +100,13 @@ describe('EditHeroComponent', () => {
     spyOn(store, 'getHeroById').and.callThrough();
     store.getHeroById(heroId);
 
+    tick(1000);
+
     expect(store.getHeroById).toHaveBeenCalledWith(heroId);
     expect(component.hero().id).toBe(heroId);
     expect(component.heroForm.value.id).toBe(heroId);
     expect(component.heroForm.valid).toBeTrue();
-  });
+  }));
 
   it('should navigate to hero list if attemptedFetch is false', fakeAsync(() => {
     const heroId = 999;

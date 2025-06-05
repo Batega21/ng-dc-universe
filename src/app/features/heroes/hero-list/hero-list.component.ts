@@ -55,7 +55,6 @@ export class HeroListComponent {
   }
 
   public onPageChange(event: PageEvent): void {
-    console.log("🚀 ~ HeroListComponent ~ onPageChange ~ event:", event)
     this.pageSize.update(() => event.pageSize);
     this.currentPage.update(() => event.pageIndex + 1);
 

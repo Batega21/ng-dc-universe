@@ -16,7 +16,6 @@ import {
 } from '@angular/material/snack-bar';
 
 import { HeroService } from '../../core/services/hero.service';
-import { LoggerService } from '../../core/services/logger.service';
 import { HeroesStore } from '../../state/hero.store';
 import { SnackBarPosition, SnackBarType } from '../../core/enums/snack-bar.enum';
 
@@ -29,7 +28,6 @@ import { SnackBarPosition, SnackBarType } from '../../core/enums/snack-bar.enum'
 export class SearchBoxComponent {
   public readonly store = inject(HeroesStore);
   private readonly _heroesService = inject(HeroService);
-  private readonly _loggerService = inject(LoggerService);
   private readonly route = inject(Router);
   public heroesQuery = signal<string[]>([]);
   public searchValue = signal('');
@@ -87,7 +85,6 @@ export class SearchBoxComponent {
           },
           error: (error) => {
             this.openNotification('Hero with these parameters not found', SnackBarType.ERROR);
-            this._loggerService.error('Hero with these parameters not found', error);
           },
         })
     }
@@ -97,11 +94,9 @@ export class SearchBoxComponent {
     this._heroesService.getHeroByName(heroName).subscribe({
       next: (response) => {
         this.onClearFilter();
-        this._loggerService.log('Successfully fetch selectedHero:', heroName);
         this.route.navigate(['hero', response.id]);
       },
       error: (error) => {
-        this._loggerService.error('Error fetching hero by name', error);
         this.openNotification('Error fetching hero by name', SnackBarType.ERROR);
         this.onClearFilter();
       },
@@ -113,7 +108,6 @@ export class SearchBoxComponent {
     event.preventDefault();
 
     if (this.heroesQuery().length === 0 || this.heroesQuery().length === 1 && this.heroesQuery()[0] === '') {
-      this._loggerService.error('No heroes selected', this.heroesQuery());
       this.openNotification('No heroes selected', SnackBarType.ERROR);
       this.onClearFilter();
       return;

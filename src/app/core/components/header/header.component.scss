@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   position: fixed;
-  background: var(--mat-sys-surface);
+  background: #000000;
   width: 100%;
   top: 0;
   z-index: 2;
@@ -16,8 +16,10 @@
 
   .mat-toolbar-left {
     justify-content: flex-start;
+    background: transparent;
   }
   .mat-toolbar-right {
     justify-content: flex-end;
+    background: transparent;
   }
 }
