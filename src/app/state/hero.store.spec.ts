@@ -3,8 +3,7 @@ import { HeroesStore } from './hero.store';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HeroService } from '../core/services/hero.service';
-import { LoggerService } from '../core/services/logger.service';
-import { Hero, HeroesPaginated } from '../core/interfaces/hero';
+import { Hero } from '../core/interfaces/hero';
 import { of, throwError } from 'rxjs';
 import { Pagination } from '../core/enums/pagination.enum';
 import { HEROES_MOCK } from '../core/constant/heroes.constant';
@@ -12,7 +11,6 @@ import { LocalStorageService } from '../core/services/local-storage.service';
 
 describe('HeroStore', () => {
   let service: HeroService;
-  let logger: LoggerService;
   let localStorageService: LocalStorageService;
 
   beforeEach(() => {
@@ -64,13 +62,6 @@ describe('HeroStore', () => {
           },
         },
         {
-          provide: LoggerService,
-          useValue: {
-            log: jasmine.createSpy('log'),
-            error: jasmine.createSpy('error'),
-          },
-        },
-        {
           provide: LocalStorageService,
           useValue: {
             getHeroesFromStorage: jasmine
@@ -86,7 +77,6 @@ describe('HeroStore', () => {
       ],
     });
     service = TestBed.inject(HeroService);
-    logger = TestBed.inject(LoggerService);
     localStorageService = TestBed.inject(LocalStorageService);
     localStorage.clear();
   });
@@ -110,9 +100,6 @@ describe('HeroStore', () => {
     expect(service.getHeroesPaginated).toHaveBeenCalledWith(pageIndex, pageSize);
     expect(store.heroes()).toEqual(HEROES_MOCK.slice(pageIndex - 1, pageSize));
     expect(store.heroesCount()).toBe(HEROES_MOCK.length);
-
-    expect(logger.log).toHaveBeenCalledWith(`Fetching paginated Heroes page: ${pageIndex}, limit: ${pageSize}`);
-    expect(logger.log).toHaveBeenCalledWith('Heroes successfully fetched and saved to local storage.');
     }
   ));
 
@@ -126,8 +113,7 @@ describe('HeroStore', () => {
     store.getHeroesPaginated(pageIndex, pageSize);
 
     tick(1000);
-
-    expect(logger.error).toHaveBeenCalledWith('Error fetching heroes from API', errorMessage);
+    // error logger removed
   }));
   
   it('should fetch heroes by name and update the state', fakeAsync(() => {
@@ -155,7 +141,7 @@ describe('HeroStore', () => {
 
     tick(1000);
 
-    expect(logger.error).toHaveBeenCalledWith('Error fetching heroes from API', errorMessage);
+    // logger.error removed
   }));
 
   it('should fetch a hero by Id from API', fakeAsync(() => {
@@ -182,7 +168,7 @@ describe('HeroStore', () => {
 
     tick(1000);
 
-    expect(logger.error).toHaveBeenCalledWith('Error fetching hero from API:', errorMessage);
+    //logger.error removed
   }));
 
   it('should add a hero and update the state', fakeAsync(() => {
@@ -218,7 +204,7 @@ describe('HeroStore', () => {
 
     tick(1000);
 
-    expect(logger.error).toHaveBeenCalledWith('Error adding hero to API', errorMessage);
+    // logger.error removed
   }));
 
   it('should update a hero and update the state', fakeAsync(() => {
@@ -243,7 +229,7 @@ describe('HeroStore', () => {
 
     tick(1000);
 
-    expect(logger.error).toHaveBeenCalledWith('Error updating hero:', errorMessage);
+    // logger.error removed
   }));
 
   it('should delete a hero and update the state', fakeAsync(() => {
@@ -264,7 +250,6 @@ describe('HeroStore', () => {
     expect(service.deleteHero).toHaveBeenCalledWith(heroId);
     expect(localStorageService.removeHeroesFromStorage).toHaveBeenCalledWith(heroId);
     expect(localStorageService.getLocalHeroes).toHaveBeenCalledWith('heroes');
-    expect(logger.log).toHaveBeenCalledWith(`Hero with id ${heroId} deleted successfully`);
   }));
 
   it('should handle error when deleteHero fails', fakeAsync(() => {
@@ -277,7 +262,7 @@ describe('HeroStore', () => {
 
     tick(1000);
 
-    expect(logger.error).toHaveBeenCalledWith('Error deleting hero:', errorMessage);
+    // logger.error removed
   }));
 
 });
